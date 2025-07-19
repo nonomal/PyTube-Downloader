@@ -1,5 +1,5 @@
 from typing import List, Dict
-import pytube
+import pytubefix
 from .value_convert_utility import ValueConvertUtility
 
 
@@ -61,12 +61,12 @@ class DownloadInfoUtility:
         return data_list
 
     @staticmethod
-    def get_supported_download_types(video_streams: pytube.StreamQuery) -> list[dict[str, int]]:
+    def get_supported_download_types(video_streams: pytubefix.StreamQuery) -> list[dict[str, int]]:
         """
         Get supported download types from video streams.
 
         Args:
-            video_streams (pytube.StreamQuery): video streams.
+            video_streams (pytubefix.StreamQuery): video streams.
 
         Returns:
             list[dict]: A list of supported download types.

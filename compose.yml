@@ -1,9 +1,0 @@
-services:
-  pytube-downloader:
-    build: .
-    container_name: pytube-downloader
-    ports:
-      - "8080:8080"
-    volumes:
-      - .:/app
-    restart: unless-stopped

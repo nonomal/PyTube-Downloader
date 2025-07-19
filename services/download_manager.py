@@ -2,7 +2,6 @@ import threading
 import time
 from settings.general_settings import GeneralSettings
 from typing import Callable, List, Dict
-from pytube import request as pytube_request
 from pytubefix import request as pytubefix_request
 
 class DownloadManager:
@@ -109,6 +108,5 @@ class DownloadManager:
         
     @staticmethod
     def configure_chunk_size():
-        pytube_request.default_range_size = GeneralSettings.settings["chunk_size"]
         pytubefix_request.default_range_size = GeneralSettings.settings["chunk_size"]
         

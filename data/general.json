@@ -1,22 +1,23 @@
 {
     "alerts": true,
     "automatic_download": {
-        "quality": "1080p",
+        "quality": "17280p",
         "status": "disable"
     },
-    "create_sep_path_for_playlists": false,
+    "chunk_size": 512000,
+    "create_sep_path_for_playlists": true,
     "create_sep_path_for_qualities": false,
     "create_sep_path_for_videos_audios": false,
-    "download_directory": false,
+    "display_download_speed_info": false,
+    "download_directory": "G:\\NEW",
     "lang_code": "en",
     "language": "English",
     "load_thumbnail": true,
-    "max_simultaneous_downloads": 1,
-    "max_simultaneous_loads": 1,
-    "max_simultaneous_converts": 1,
+    "max_simultaneous_converts": 4,
+    "max_simultaneous_downloads": 2,
+    "max_simultaneous_loads": 3,
     "re_download_automatically": false,
     "reload_automatically": false,
     "update_delay": 0.5,
-    "window_geometry": "900x500+-7+0",
-    "display_download_speed_info": false
+    "window_geometry": "1098x610+765+62"
 }

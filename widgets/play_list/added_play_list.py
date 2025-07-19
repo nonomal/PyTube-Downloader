@@ -1,12 +1,12 @@
 import threading
 import customtkinter as ctk
-import pytube
 from typing import Literal, Union, List
 from .play_list import PlayList
 from widgets import AddedVideo
 from utils import GuiUtils
 from settings import AppearanceSettings, GeneralSettings
 from services import LanguageManager
+import pytubefix
 
 
 class AddedPlayList(PlayList):
@@ -32,7 +32,7 @@ class AddedPlayList(PlayList):
         """self.loading_video_count_label: Union[ctk.CTkLabel, None] = None
         self.waiting_video_count_label: Union[ctk.CTkLabel, None] = None"""
         # playlist object
-        self.playlist: Union[pytube.Playlist, None] = None
+        self.playlist: Union[pytubefix.Playlist, None] = None
         # callback utils
         self.playlist_download_button_click_callback: callable = playlist_download_button_click_callback
         self.video_download_button_click_callback: callable = video_download_button_click_callback
@@ -62,7 +62,7 @@ class AddedPlayList(PlayList):
     def load_playlist(self):
         self.view_btn.configure(state="disabled")
         try:
-            self.playlist = pytube.Playlist(self.playlist_url)
+            self.playlist = pytubefix.Playlist(self.playlist_url)
             self.playlist_video_count = int(self.playlist.length)
             self.playlist_original_video_count = self.playlist_video_count
             self.channel = str(self.playlist.owner)

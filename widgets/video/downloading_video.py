@@ -7,7 +7,7 @@ import sys
 import re
 from tkinter import PhotoImage
 from typing import Literal, List, Union, Dict
-from pytube import request as pytube_request
+from pytubefix import request as pytube_request
 import time
 from settings import (
     GeneralSettings,

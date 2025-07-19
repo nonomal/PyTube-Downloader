@@ -3,3 +3,8 @@
 *.pyc
 ffmpeg/ffmpeg.exe
 temp/thumbnails/*.png
+history/thumbnails/*.png
+assets/profile images/*.png
+data/appearance.json
+data/general.json
+data/info.json

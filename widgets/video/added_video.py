@@ -11,7 +11,6 @@ from services import (
     ThemeManager,
     LanguageManager,
     VideoCountTracker,
-    DownloadManager
 )
 from settings import (
     AppearanceSettings,
@@ -236,7 +235,7 @@ class AddedVideo(Video):
     def retrieve_video_data(self):
         self.pytube_client_index += 1
         try:
-            self.video = pytube.YouTube(self.video_url, client=AddedVideo.PYTUBE_CLIENTS[self.pytube_client_index])
+            self.video = pytube.YouTube(self.video_url)
             self.video_title = str(self.video.title)
             self.channel = str(self.video.author)
             self.length = int(self.video.length)
