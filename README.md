@@ -33,6 +33,7 @@
     | `English`       | -            |
     | `中文` (Chinese)| [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
     | `සිංහල` (Sinhala)| [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) |
+    | `தமிழ்`(Tamil) | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) 
 
   -  **Help us [``improve current languages``](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues) and [``add new languages``](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language) to this application.** 
 - **Shortcut Keys**: Take control of the application with  shortcut keys for common tasks.
@@ -149,3 +150,4 @@ This application is intended for personal use only. Please respect YouTube's ter
 - [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) [youyu](https://github.com/childeyouyu)
 - [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) [Navindu Pahasara](https://github.com/Navindu21)
 - [<img src="https://github.com/sooryasuraweera.png?size=25" width="25">](https://github.com/sooryasuraweera) [Soorya Suraweera](https://github.com/sooryasuraweera)
+- [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) [Fathima Asma](https://github.com/fathi-asma)
