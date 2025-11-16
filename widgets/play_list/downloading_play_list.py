@@ -275,7 +275,7 @@ class DownloadingPlayList(PlayList):
                    status_message = LanguageManager.data["downloading_notifi"]
             elif video.download_state == "failed":
                 status_message = LanguageManager.data["download_failed_notifi"]
-            # Show Download completed Notification
+            # Show Notification
             NotificationManager.register(
                 playlist_title=self.playlist_title,
                 video_title=video.video_title,

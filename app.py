@@ -734,8 +734,8 @@ class App(ctk.CTk):
         self.navigate_downloaded_btn.place(x=nav_button_width * 2 + 10 + button_margin * 2)
         self.navigate_history_btn.place(x=nav_button_width * 3 + 10 + button_margin * 3)
 
-        self.video_radio_btn.place(x=root_width - 190 * scale)
-        self.playlist_radio_btn.place(x=root_width - 190 * scale)
+        self.video_radio_btn.place(x=root_width - 202 * scale)
+        self.playlist_radio_btn.place(x=root_width - 202 * scale)
         self.add_url_btn.place(x=root_width - 110 * scale)
 
         if self.added_frame_info_label_placed:

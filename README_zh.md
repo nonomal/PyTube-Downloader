@@ -34,6 +34,7 @@
     | `English` (英文)         | -            |
     | `中文` | [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
     | `සිංහල` (僧伽罗语) | [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) |
+    | `தமிழ்` (泰米尔语)  | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) |
 
   - **帮助我们 [``改进当前语言``](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#improve-current-language-issues) 和 [``添加新语言``](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#adding-a-new-language) 到此应用程序。**
 - **快捷键**： 使用常见任务的快捷键来控制应用程序。

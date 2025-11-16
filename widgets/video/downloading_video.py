@@ -341,13 +341,12 @@ class DownloadingVideo(Video):
                                 self.set_downloading_failed()
                                 break
                             
-                    
-                        
                     except Exception as error:
                         print(f"downloading_video.py L-332 : {error}")
                         self.total_bytes_downloaded -= self.bytes_downloaded
                         self.set_downloading_failed()
                         break
+                    
         except Exception as error:
             print(f"downloading_video.py L-336 : {error}")
             self.total_bytes_downloaded -= self.bytes_downloaded
