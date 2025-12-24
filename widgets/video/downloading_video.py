@@ -18,7 +18,8 @@ from services import (
     LanguageManager,
     VideoCountTracker,
     NotificationManager,
-    VideoConvertManager
+    VideoConvertManager,
+    ThemeManager
 )
 from utils import (
     GuiUtils,
@@ -142,7 +143,7 @@ class DownloadingVideo(Video):
             rely=0.5,
             anchor="w",
             relx=1,
-            x=-80 * AppearanceSettings.settings["scale_r"])
+            x=-80 * AppearanceSettings.get_scale("decimal"))
         self.download_state = "downloading"
         if self.mode == "playlist":
             self.video_download_status_callback(self, self.download_state)
@@ -171,12 +172,12 @@ class DownloadingVideo(Video):
         
         if self.download_state == "failed":
             self.status_label.configure(
-                text_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
+                text_color=ThemeManager.get_color_based_on_theme("text_warning"),
             )
         elif self.download_state == "waiting" or self.download_state == "paused" or self.download_state == "downloading" or \
             self.download_state == "pausing" or self.download_state == "downloaded" or self.download_state == "converting":
             self.status_label.configure(
-                text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"],
+                text_color=ThemeManager.get_color_based_on_theme("text_normal"),
             )
             
         self.status_label.configure(text=LanguageManager.data[self.download_state])
@@ -506,7 +507,7 @@ class DownloadingVideo(Video):
                 rely=0.5,
                 anchor="w",
                 relx=1,
-                x=-80 * AppearanceSettings.settings["scale_r"])
+                x=-80 * AppearanceSettings.get_scale("decimal"))
 
         if self.mode == "video":
             self.show_notification()
@@ -537,6 +538,13 @@ class DownloadingVideo(Video):
         """
         Set the status to 'downloaded' if the download is downloaded.
         """
+
+        print("#"*15)
+        print("#"*15)
+        print("Called : set_downloading_completed")
+        print("#"*15)
+        print("#"*15)
+
         self.download_state = "downloaded"
         DownloadManager.unregister_from_active(self)
         VideoConvertManager.unregister_from_active(self)
@@ -639,15 +647,15 @@ class DownloadingVideo(Video):
         
         super().set_widgets_fonts()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
-        self.download_progress_label.configure(font=("arial", 12 * scale, "bold"))
-        self.process_percentage_label.configure(font=("arial", 12 * scale, "bold"))
-        self.download_type_label.configure(font=("arial", 12 * scale, "bold"))
-        self.net_speed_label.configure(font=("arial", 12 * scale, "bold"), )
-        self.status_label.configure(font=("arial", 12 * scale, "bold"))
-        self.re_download_btn.configure(font=("arial", 20 * scale, "normal"))
-        self.pause_resume_btn.configure(font=("arial", 20 * scale, "normal"))
+        self.download_progress_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.process_percentage_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.download_type_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.net_speed_label.configure(font=("Segoe UI", 12 * scale, "bold"), )
+        self.status_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.re_download_btn.configure(font=("Segoe UI", 20 * scale, "normal"))
+        self.pause_resume_btn.configure(font=("Segoe UI", 20 * scale, "normal"))
 
     def set_widgets_sizes(self):
         """
@@ -656,7 +664,7 @@ class DownloadingVideo(Video):
 
         super().set_widgets_sizes()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.sub_frame.configure(height=self.height - 3)
         self.download_progress_bar.configure(height=8 * scale, width=self.sub_frame.winfo_width())
@@ -676,10 +684,10 @@ class DownloadingVideo(Video):
         super().set_widgets_accent_color()
 
         self.download_progress_bar.configure(
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            progress_color=ThemeManager.get_accent_color("normal")
         )
-        self.re_download_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        self.pause_resume_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.re_download_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
+        self.pause_resume_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
 
     def set_widgets_colors(self) -> None:
         """
@@ -688,20 +696,21 @@ class DownloadingVideo(Video):
 
         super().set_widgets_colors()
 
-        self.sub_frame.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
+        self.sub_frame.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
         self.download_progress_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.process_percentage_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.download_type_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
-        self.net_speed_label.configure(text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"])
-        self.status_label.configure(text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"])
-        self.re_download_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-        self.pause_resume_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
+        self.download_progress_bar.configure(fg_color=ThemeManager.get_color_based_on_theme("secondary"))
+        self.net_speed_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.status_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.re_download_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
+        self.pause_resume_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
 
     def on_mouse_enter_self(self, event):
         """
@@ -738,15 +747,13 @@ class DownloadingVideo(Video):
 
         def on_mouse_enter_re_download_btn(_event):
             self.re_download_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["hover"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_accent_color("hover"),
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_download_btn(_event):
             self.re_download_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_accent_color("normal"),
             )
 
         self.re_download_btn.bind("<Enter>", on_mouse_enter_re_download_btn)
@@ -754,13 +761,14 @@ class DownloadingVideo(Video):
 
         def on_mouse_enter_pause_resume_btn(_event):
             self.pause_resume_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_accent_color("hover"),
+
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_pause_resume_btn(_event):
             self.pause_resume_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_accent_color("normal"),
             )
 
         self.pause_resume_btn.bind("<Enter>", on_mouse_enter_pause_resume_btn)
@@ -783,7 +791,7 @@ class DownloadingVideo(Video):
         """
         Configure widget sizes based on the parent widget's size.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.info_frame.configure(
             width=(
                     (self.winfo_width() / 2) - (self.thumbnail_btn.winfo_width() + 5) -

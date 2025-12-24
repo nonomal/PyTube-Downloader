@@ -61,7 +61,7 @@
     "name": "பெயர்",
     "version": "பதிப்பு",
     "site": "தளம்",
-    "contributors": "பங்களிப்பாளர்கள்",
+    "developed_by": "உருவாக்கியவர்",
     "contribute_data_retrieve_failed": "தரவு பெற முடியவில்லை",
     "contribute_data_retrieving": "தரவு பெறுகிறது...",
     "dark": "இருள்",
@@ -123,5 +123,7 @@
     "peak": "உச்சம்",
     "download_speed": "வேகம்",
     "configuring_app_previous_state": "முன் நிலை அமைப்பு...",
-    "more": "மேலும்"
+    "more": "மேலும்",
+    "profile" : "சுயவிவரம்",
+    "explore_the_project": "திட்டத்தை ஆராய்க"
 }

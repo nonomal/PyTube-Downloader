@@ -7,3 +7,4 @@ pyperclip
 pytubefix
 win11toast
 ctkchart
+hPyT

@@ -7,7 +7,6 @@ from .play_list import DownloadingPlayList
 from .play_list import DownloadedPlayList
 
 from .components import AccentColorButton
-from .components import AboutPanel
 from .components import ContributorProfileWidget
 
 from .setting_panels import AppearancePanel
@@ -15,9 +14,9 @@ from .setting_panels import NetworkPanel
 from .setting_panels import NavigationPanel
 from .setting_panels import GeneralPanel
 from .setting_panels import DownloadsPanel
+from .setting_panels import AboutPanel
 
 from .core_widgets import AlertWindow
-from .core_widgets import LowLevelAlertWindow
 from .core_widgets import TrayMenu
 from .core_widgets import ContextMenu
 from .core_widgets import SettingPanel

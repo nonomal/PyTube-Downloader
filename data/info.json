@@ -1,6 +1,16 @@
 {
     "contributors": {},
+    "explore_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/Thisal-D/PyTube-Downloader"
+        },
+        {
+            "name": "SourceForge",
+            "url": "https://sourceforge.net/projects/pytube-downloader/"
+        }
+    ],
+    "logo": "⚡",
     "name": "PyTube Downloader",
-    "site": "https://github.com/Thisal-D/PyTube-Downloader",
     "version": "5.1.3"
 }

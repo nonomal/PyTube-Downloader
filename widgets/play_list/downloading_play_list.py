@@ -7,7 +7,8 @@ from utils import GuiUtils
 from settings import AppearanceSettings, GeneralSettings
 from services import (
     LanguageManager,
-    NotificationManager
+    NotificationManager,
+    ThemeManager
 )
 
 
@@ -71,7 +72,7 @@ class DownloadingPlayList(PlayList):
             video = DownloadingVideo(
                 root=self.root,
                 master=self.playlist_videos_frame,
-                height=70 * AppearanceSettings.settings["scale_r"],
+                height=70 * AppearanceSettings.get_scale("decimal"),
                 width=self.playlist_videos_frame.winfo_width() - 20,
                 channel_url=added_video.channel_url,
                 video_url=added_video.video_url,
@@ -234,7 +235,7 @@ class DownloadingPlayList(PlayList):
         self.re_download_btn.place_forget()
         self.status_label.configure(
             text=LanguageManager.data['waiting'],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
 
     def indicate_downloading_failure(self):
@@ -243,10 +244,10 @@ class DownloadingPlayList(PlayList):
             relx=1,
             rely=0.5,
             anchor="w",
-            x=-80 * AppearanceSettings.settings["scale_r"])
+            x=-80 * AppearanceSettings.get_scale("decimal"))
         self.status_label.configure(
             text=LanguageManager.data['failed'],
-            text_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_warning")
         )
 
     def indicate_downloading(self):
@@ -254,14 +255,14 @@ class DownloadingPlayList(PlayList):
         self.re_download_btn.place_forget()
         self.status_label.configure(
             text=LanguageManager.data['downloading'],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
 
     def set_downloading_completed(self):
         self.download_state = "downloaded"
         self.status_label.configure(
             text=LanguageManager.data['downloaded'],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.playlist_download_complete_callback(self)
         self.kill()
@@ -320,17 +321,17 @@ class DownloadingPlayList(PlayList):
     def set_widgets_fonts(self):
         super().set_widgets_fonts()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
-        self.download_percentage_label.configure(font=("arial", 12 * scale, "bold"))
-        self.status_label.configure(font=("arial", 12 * scale, "bold"))
-        self.re_download_btn.configure(font=("arial", 20 * scale, "normal"))
+        self.download_percentage_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.status_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.re_download_btn.configure(font=("Segoe UI", 20 * scale, "normal"))
         self.videos_status_counts_label.configure(font=("Segoe UI", 11 * scale, "normal"))
 
     def set_widgets_sizes(self):
         super().set_widgets_sizes()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.sub_frame.configure(height=self.height - 3)
         self.download_progress_bar.configure(height=8 * scale)
@@ -343,20 +344,26 @@ class DownloadingPlayList(PlayList):
     def set_widgets_accent_color(self):
         super().set_widgets_accent_color()
         self.download_progress_bar.configure(
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            progress_color=ThemeManager.get_accent_color("normal")
         )
-        self.re_download_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-
+        self.re_download_btn.configure(
+            text_color=ThemeManager.get_accent_color("normal")
+        )
+    
     def set_widgets_colors(self):
         super().set_widgets_colors()
 
-        self.sub_frame.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-        self.download_percentage_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+        self.sub_frame.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            bg_color=ThemeManager.get_color_based_on_theme("primary")
         )
-        self.status_label.configure(text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"])
-        self.re_download_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-
+        self.download_percentage_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )
+        self.status_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.re_download_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
+        self.download_progress_bar.configure(fg_color=ThemeManager.get_color_based_on_theme("secondary"))
+        
     def on_mouse_enter_self(self, _event):
         # super().on_mouse_enter_self(_event)
 
@@ -378,15 +385,13 @@ class DownloadingPlayList(PlayList):
 
         def on_mouse_enter_re_download_btn(_event):
             self.re_download_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["hover"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_accent_color("hover")
             )
             # self.on_mouse_enter_self(_event)
 
         def on_mouse_leave_download_btn(_event):
             self.re_download_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_accent_color("normal")
             )
         self.re_download_btn.bind("<Enter>", on_mouse_enter_re_download_btn)
         self.re_download_btn.bind("<Leave>", on_mouse_leave_download_btn)
@@ -403,7 +408,7 @@ class DownloadingPlayList(PlayList):
 
     # configure widgets sizes and place location depend on root width
     def configure_widget_sizes(self, _event):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.info_frame.configure(
             width=self.master_frame.winfo_width() / 2 - (50 * scale + 15 * scale) - (20 * scale)
         )

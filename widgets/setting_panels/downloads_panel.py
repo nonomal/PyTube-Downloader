@@ -26,43 +26,35 @@ class DownloadsPanel(ctk.CTkFrame):
 
         super().__init__(
             master=master,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         self.download_path_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash1_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.download_path_entry = ctk.CTkEntry(
             master=self,
             justify="left",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.download_path_choose_button = ctk.CTkButton(
             master=self,
-            text="📂",
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
+            text="📂", #📁, 📂, 🗂️
             hover=False,
             command=self.select_download_path,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
             )
 
         # ---------------------------------------------------------------------------
         self.create_sep_path_for_videos_audios_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash2_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.create_sep_path_for_videos_audios_switch_state = ctk.BooleanVar(value=None)
         self.create_sep_path_for_videos_audios_switch = ctk.CTkSwitch(
@@ -80,13 +72,11 @@ class DownloadsPanel(ctk.CTkFrame):
         # ---------------------------------------------------------------------------
         self.create_sep_path_for_qualities_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash3_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.create_sep_path_for_qualities_switch_state = ctk.BooleanVar(value=None)
         self.create_sep_path_for_qualities_switch = ctk.CTkSwitch(
@@ -106,12 +96,10 @@ class DownloadsPanel(ctk.CTkFrame):
         self.create_sep_path_for_playlists_label = ctk.CTkLabel(
             master=self,
             text="Playlist-Specific Directories",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash4_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.create_sep_path_for_playlists_switch_state = ctk.BooleanVar(value=None)
@@ -134,13 +122,11 @@ class DownloadsPanel(ctk.CTkFrame):
         self.chunk_size_label = ctk.CTkLabel(
             master=self,
             text="Chunk Size",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.dash5_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.chunk_size_change_slider = ctk.CTkSlider(
@@ -152,8 +138,6 @@ class DownloadsPanel(ctk.CTkFrame):
         
         self.chunk_size_value_entry = ctk.CTkEntry(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
         
         # -------------------------------------------------------------
@@ -162,12 +146,10 @@ class DownloadsPanel(ctk.CTkFrame):
             master=self,
             state="disabled",
             command=self.apply_downloads_settings,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.settings_reset_button = ctk.CTkButton(
             master=self, 
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
             command=self.reset_settings
         )
         
@@ -188,6 +170,7 @@ class DownloadsPanel(ctk.CTkFrame):
         self.general_settings_change_callback = general_settings_change_callback
         self.configure_values()
         self.set_widgets_accent_color()
+        self.set_widgets_colors()
         self.set_widgets_texts()
         self.set_widgets_sizes()
         self.set_widgets_fonts()
@@ -242,7 +225,7 @@ class DownloadsPanel(ctk.CTkFrame):
         
     def ask_to_restart(self):
         from widgets import AlertWindow
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         AlertWindow(
             master=self.master.master,
             original_configure_callback=self.master.master.run_geometry_changes_tracker,
@@ -361,82 +344,171 @@ class DownloadsPanel(ctk.CTkFrame):
 
     def bind_widgets_events(self):
         self.download_path_entry.bind("<KeyRelease>", self.download_path_validate)
+
+        def on_mouse_enter_download_path_entry(event_):
+            self.download_path_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_download_path_entry(event_):
+            self.download_path_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.download_path_entry.bind("<Enter>", on_mouse_enter_download_path_entry)
+        self.download_path_entry.bind("<Leave>", on_mouse_leave_download_path_entry)
         
         def on_mouse_enter_download_path_button(_event):
             self.download_path_choose_button.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_accent_color("hover")
             )
 
         def on_mouse_leave_download_path_button(_event):
             self.download_path_choose_button.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_accent_color("normal")
             )
         self.download_path_choose_button.bind("<Enter>", on_mouse_enter_download_path_button)
         self.download_path_choose_button.bind("<Leave>", on_mouse_leave_download_path_button)
+        # ---------------------------------------------------------------------------
+
+        def on_mouse_enter_create_sep_path_for_videos_audios_switch(event_):
+            self.create_sep_path_for_videos_audios_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_create_sep_path_for_videos_audios_switch(event_):
+            self.create_sep_path_for_videos_audios_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.create_sep_path_for_videos_audios_switch.bind("<Enter>", on_mouse_enter_create_sep_path_for_videos_audios_switch)
+        self.create_sep_path_for_videos_audios_switch.bind("<Leave>", on_mouse_leave_create_sep_path_for_videos_audios_switch)
+        # ---------------------------------------------------------------------------
+
+        def on_mouse_enter_create_sep_path_for_qualities_switch(event_):
+            self.create_sep_path_for_qualities_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_create_sep_path_for_qualities_switch(event_):
+            self.create_sep_path_for_qualities_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.create_sep_path_for_qualities_switch.bind("<Enter>", on_mouse_enter_create_sep_path_for_qualities_switch)
+        self.create_sep_path_for_qualities_switch.bind("<Leave>", on_mouse_leave_create_sep_path_for_qualities_switch)
+        # ---------------------------------------------------------------------------
+
+        def on_mouse_enter_create_sep_path_for_playlists_switch(event_):
+            self.create_sep_path_for_playlists_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_create_sep_path_for_playlists_switch(event_):
+            self.create_sep_path_for_playlists_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.create_sep_path_for_playlists_switch.bind("<Enter>", on_mouse_enter_create_sep_path_for_playlists_switch)
+        self.create_sep_path_for_playlists_switch.bind("<Leave>", on_mouse_leave_create_sep_path_for_playlists_switch)
+
+    def set_widgets_colors(self):
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+        
+        self.download_path_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash1_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.download_path_entry.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+        )
+        self.download_path_choose_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+        )
+
+        self.create_sep_path_for_videos_audios_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash2_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.create_sep_path_for_videos_audios_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )    
+        self.create_sep_path_for_videos_audios_info_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )
+
+        self.create_sep_path_for_qualities_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash3_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.create_sep_path_for_qualities_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )    
+        self.create_sep_path_for_qualities_info_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )
+
+        self.create_sep_path_for_playlists_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash4_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.create_sep_path_for_playlists_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )    
+        self.create_sep_path_for_playlists_info_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )
+
+        self.chunk_size_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash5_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.chunk_size_change_slider.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )     
+        self.chunk_size_value_entry.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            border_color=ThemeManager.get_color_based_on_theme("border")
+        )
+
+        self.apply_changes_button.configure(
+            text_color=ThemeManager.get_color_based_on_theme("background"),
+        )
+        self.settings_reset_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+        )
+
+    def update_widgets_colors(self):
+        self.set_widgets_colors()
 
     def set_widgets_accent_color(self):
         self.download_path_choose_button.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            text_color=ThemeManager.get_accent_color("normal")
         )
-        self.download_path_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )    
         self.create_sep_path_for_videos_audios_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.create_sep_path_for_videos_audios_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            progress_color=ThemeManager.get_accent_color("normal")
         )
         self.create_sep_path_for_qualities_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.create_sep_path_for_qualities_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            progress_color=ThemeManager.get_accent_color("normal")
         )
         self.create_sep_path_for_playlists_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.create_sep_path_for_playlists_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            progress_color=ThemeManager.get_accent_color("normal")
         )
         self.chunk_size_change_slider.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
+            progress_color=ThemeManager.get_accent_color("normal"),
         )
-        self.chunk_size_value_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.settings_reset_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
+        
         self.apply_changes_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
         )
         
     def update_widgets_accent_color(self):
         self.set_widgets_accent_color()
 
-    def update_widgets_colors(self):
-        """Update colors for the widgets."""
-
     def place_widgets(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         pady = 16 * scale
 
         self.download_path_label.grid(row=0, column=0, padx=(100, 0), pady=(50, 0), sticky="w")
         self.dash1_label.grid(row=0, column=1, padx=(30, 30), pady=(50, 0), sticky="w")
         self.download_path_entry.grid(row=0, column=2, pady=(50, 0), sticky="w")
-        self.download_path_choose_button.grid(row=0, column=2, pady=(50, 0), padx=(270*scale, 0), sticky="w")
+        self.download_path_choose_button.grid(row=0, column=2, pady=(43, 0), padx=(270*scale, 0), sticky="w")
         
         self.create_sep_path_for_videos_audios_label.grid(row=1, column=0, padx=(100, 0), pady=(pady, 0), sticky="w")
         self.dash2_label.grid(row=1, column=1, padx=(30, 30), pady=(pady, 0), sticky="w")
@@ -480,17 +552,18 @@ class DownloadsPanel(ctk.CTkFrame):
         )
 
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         self.download_path_entry.configure(width=250 * scale, height=28 * scale)
-        self.download_path_choose_button.configure(width=30 * scale, height=30 * scale)
+        # have no fore ground width and height not important
+        self.download_path_choose_button.configure(width=1 * scale, height=1 * scale)
         self.create_sep_path_for_videos_audios_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
         self.create_sep_path_for_qualities_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
         self.create_sep_path_for_playlists_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
         self.chunk_size_change_slider.configure(width=180 * scale, height=18 * scale)
         self.chunk_size_value_entry.configure(width=80 * scale, height=24 * scale)
         
-        self.apply_changes_button.configure(width=50 * scale, height=24 * scale)
+        self.apply_changes_button.configure(width=80 * scale, height=24 * scale)
         self.settings_reset_button.configure(width=80*scale, height=24 * scale)
 
     def set_widgets_texts(self):
@@ -529,7 +602,7 @@ class DownloadsPanel(ctk.CTkFrame):
         self.set_widgets_texts()
 
     def set_widgets_fonts(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         title_font = ("Segoe UI", 13 * scale, "bold")
         self.download_path_label.configure(font=title_font)
@@ -550,13 +623,13 @@ class DownloadsPanel(ctk.CTkFrame):
         self.create_sep_path_for_playlists_info_label.configure(font=value_font)
         self.chunk_size_value_entry.configure(font=value_font)
 
-        button_font = ("Segoe UI", 13 * scale, "bold")
-        self.apply_changes_button.configure(font=button_font)
-
-        button_font2 = ("Segoe UI", 28 * scale, "bold")
+   
+        button_font2 = ("Segoe UI", 30 * scale, "bold")
         self.download_path_choose_button.configure(font=button_font2)
-        
-        self.settings_reset_button.configure(font=("Segoe UI", 11 * scale, "bold"))
+
+        button_font = ("Segoe UI", 11 * scale, "bold")
+        self.apply_changes_button.configure(font=button_font)
+        self.settings_reset_button.configure(font=button_font)
 
     def bind_widgets_events(self):
         """

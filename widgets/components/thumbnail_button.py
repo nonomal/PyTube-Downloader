@@ -11,7 +11,7 @@ class ThumbnailButton(tk.Button):
     def __init__(
             self,
             master: Any = None,
-            font: Tuple[str, int, str] = ("arial", 14, "bold"),
+            font: Tuple[str, int, str] = ("Segoe UI", 14, "bold"),
             command: callable = None,
             height: int = 0,
             width: int = 0,

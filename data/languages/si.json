@@ -61,7 +61,7 @@
     "name": "නම",
     "version": "පිටපත",
     "site": "වෙබ් අඩවිය",
-    "contributors": "දායකයන්",
+    "developed_by": "සංවර්ධනය කළේ",
     "contribute_data_retrieve_failed": "දායක දත්ත ලබා ගැනීම අසාර්ථකයි...!",
     "contribute_data_retrieving": "දායකයින්ගේ දත්ත ලබා ගනිමින්...!",
     "dark": "අඳුරු",
@@ -123,6 +123,8 @@
     "peak": "වැඩිම",
     "download_speed": "බාගත කිරීමේ වේගය",
     "configuring_app_previous_state": "යෙදුමේ පෙර තත්වය සැකසෙමින්...",
-    "more": "තවත්"
+    "more": "තවත්",
+    "profile" : "පැතිකඩ",
+    "explore_the_project": "ව්‍යාපෘතිය විමසන්න"
 }
  

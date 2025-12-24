@@ -61,7 +61,7 @@
     "name": "Name",
     "version": "Version",
     "site": "Site",
-    "contributors": "Contributors",
+    "developed_by": "Developed by",
     "contribute_data_retrieve_failed": "Failed to retrieve contributors data...!",
     "contribute_data_retrieving": "Retrieving contributors data...!",
     "dark": "Dark",
@@ -123,5 +123,7 @@
     "peak": "Peak",
     "download_speed": "Download Speed",
     "configuring_app_previous_state": "Configuring app previous state...",
-    "more": "More"
+    "more": "More",
+    "profile" : "Profile",
+    "explore_the_project": "Explore the Project"
 }

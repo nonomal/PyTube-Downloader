@@ -5,7 +5,7 @@ from .play_list import PlayList
 from widgets import AddedVideo
 from utils import GuiUtils
 from settings import AppearanceSettings, GeneralSettings
-from services import LanguageManager
+from services import LanguageManager, ThemeManager
 import pytubefix
 
 
@@ -81,7 +81,7 @@ class AddedPlayList(PlayList):
                 root=self.root,
                 master=self.playlist_videos_frame,
                 width=self.playlist_videos_frame.winfo_width() - 20,
-                height=70 * AppearanceSettings.settings["scale_r"],
+                height=70 * AppearanceSettings.get_scale("decimal"),
                 video_url=video_url,
                 video_download_button_click_callback=self.video_download_button_click_callback,
                 mode="playlist",
@@ -227,7 +227,7 @@ class AddedPlayList(PlayList):
         self.load_state = "waiting"
         self.status_label.configure(
             text=LanguageManager.data['waiting'],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.reload_btn.place_forget()
 
@@ -235,19 +235,19 @@ class AddedPlayList(PlayList):
         self.load_state = "failed"
         self.status_label.configure(
             text=LanguageManager.data['failed'],
-            text_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_warning")
         )
         self.reload_btn.place(
             relx=1,
             rely=0.5,
             anchor="w",
-            x=-80 * AppearanceSettings.settings["scale_r"])
+            x=-80 * AppearanceSettings.get_scale("decimal"))
 
     def indicate_loading(self):
         self.load_state = "loading"
         self.status_label.configure(
             text=LanguageManager.data['loading'],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.reload_btn.place_forget()
 
@@ -288,8 +288,8 @@ class AddedPlayList(PlayList):
         self.resolution_select_menu = ctk.CTkComboBox(
             master=self.sub_frame,
             values=["..........", "..........", ".........."],
-            width=150 * AppearanceSettings.settings["scale_r"],
-            height=28 * AppearanceSettings.settings["scale_r"]
+            width=150 * AppearanceSettings.get_scale("decimal"),
+            height=28 * AppearanceSettings.get_scale("decimal")
         )
         self.download_btn = ctk.CTkButton(
             master=self.sub_frame,
@@ -322,25 +322,25 @@ class AddedPlayList(PlayList):
     def set_widgets_fonts(self):
         super().set_widgets_fonts()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.resolution_select_menu.configure(
             dropdown_font=("Segoe UI", 13 * scale, "normal"),
             font=("Segoe UI", 13 * scale, "normal")
         )
-        self.download_btn.configure(font=("arial", 12 * scale, "bold"))
-        self.status_label.configure(font=("arial", 13 * scale, "bold"))
-        self.reload_btn.configure(font=("arial", 22 * scale, "normal"))
+        self.download_btn.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.status_label.configure(font=("Segoe UI", 13 * scale, "bold"))
+        self.reload_btn.configure(font=("Segoe UI", 22 * scale, "normal"))
         self.videos_status_counts_label.configure(font=("Segoe UI", 11 * scale, "normal"))
 
     def set_widgets_sizes(self):
         super().set_widgets_sizes()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.sub_frame.configure(height=self.height - 3, width=340 * scale)
         self.resolution_select_menu.configure(width=150 * scale, height=28 * scale)
-        self.download_btn.configure(width=80 * scale, height=25 * scale, border_width=2)
+        self.download_btn.configure(width=80 * scale, height=25 * scale)
         self.status_label.configure(height=15 * scale, width=80 * scale)
         self.reload_btn.configure(width=15 * scale, height=15 * scale)
         self.videos_status_counts_label.configure(height=15 * scale)
@@ -350,40 +350,41 @@ class AddedPlayList(PlayList):
         super().set_widgets_accent_color()
 
         self.resolution_select_menu.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            dropdown_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            dropdown_hover_color=ThemeManager.get_accent_color("hover")
         )
-        self.download_btn.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        self.reload_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-
-        self.download_btn.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        self.reload_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.download_btn.configure(
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
+        )
+        self.reload_btn.configure(
+            text_color=ThemeManager.get_accent_color("normal"),
+        )
 
     def set_widgets_colors(self):
         super().set_widgets_colors()
 
         self.sub_frame.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.download_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["btn_fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["btn_text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.status_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.reload_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.videos_status_counts_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.resolution_select_menu.configure(
-            dropdown_fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"],
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            dropdown_fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            dropdown_text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
 
     def on_mouse_enter_self(self, _event):
@@ -404,7 +405,8 @@ class AddedPlayList(PlayList):
         
     def bind_widgets_events(self):
         super().bind_widgets_events()
-
+        
+        """
         def on_mouse_enter_download_btn(_event):
             if self.download_btn.cget("state") == "normal":
                 self.download_btn.configure(
@@ -424,16 +426,30 @@ class AddedPlayList(PlayList):
 
         self.download_btn.bind("<Enter>", on_mouse_enter_download_btn)
         self.download_btn.bind("<Leave>", on_mouse_leave_download_btn)
+        """
+        
+        def on_mouse_enter_resolution_select_menu(event_):
+            self.resolution_select_menu.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_resolution_select_menu(event_):
+            self.resolution_select_menu.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.resolution_select_menu.bind("<Enter>", on_mouse_enter_resolution_select_menu)
+        self.resolution_select_menu.bind("<Leave>", on_mouse_leave_resolution_select_menu)
 
         def on_mouse_enter_reload_btn(_event):
             self.reload_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
+                text_color=ThemeManager.get_accent_color("hover")
             )
             # self.on_mouse_enter_self(_event)
 
         def on_mouse_leave_reload_btn(_event):
             self.reload_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
+                text_color=ThemeManager.get_accent_color("normal")
             )
 
         self.reload_btn.bind("<Enter>", on_mouse_enter_reload_btn)
@@ -443,7 +459,7 @@ class AddedPlayList(PlayList):
     def place_widgets(self):
         super().place_widgets()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.sub_frame.place(y=1, relx=1, x=-390 * scale)
 
@@ -453,7 +469,7 @@ class AddedPlayList(PlayList):
         self.videos_status_counts_label.place(rely=0.875, relx=0.5, anchor="center")
 
     def configure_widget_sizes(self, _event):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.info_frame.configure(
             width=self.master_frame.winfo_width() - (390*scale) - (50*scale + 15 * scale) - (20 * scale)
         )

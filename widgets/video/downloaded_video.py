@@ -9,7 +9,8 @@ from utils import (
 from services import (
     LanguageManager, 
     VideoCountTracker,
-    HistoryManager
+    HistoryManager,
+    ThemeManager
 )
 from settings import AppearanceSettings
 
@@ -115,17 +116,17 @@ class DownloadedVideo(Video):
     def set_widgets_fonts(self):
         super().set_widgets_fonts()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
-        self.download_type_label.configure(font=("arial", 12 * scale, "bold"))
-        self.file_size_label.configure(font=("arial", 12 * scale, "normal"))
-        self.download_path_btn.configure(font=("arial", 30 * scale, "bold"))
-        self.play_video_btn.configure(font=("arial", 35 * scale, "bold"))
+        self.download_type_label.configure(font=("Segoe UI", 12 * scale, "bold"))
+        self.file_size_label.configure(font=("Segoe UI", 12 * scale, "normal"))
+        self.download_path_btn.configure(font=("Segoe UI", 30 * scale, "bold"))
+        self.play_video_btn.configure(font=("Segoe UI", 35 * scale, "bold"))
 
     def set_widgets_sizes(self):
         super().set_widgets_sizes()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.download_type_label.configure(height=15 * scale)
         self.file_size_label.configure(height=15 * scale)
@@ -135,18 +136,18 @@ class DownloadedVideo(Video):
     def set_widgets_accent_color(self):
         super().set_widgets_accent_color()
 
-        self.download_path_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        self.play_video_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.download_path_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
+        self.play_video_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
 
     def set_widgets_colors(self):
         super().set_widgets_colors()
 
         self.download_type_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
-        self.file_size_label.configure(text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"])
-        self.download_path_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-        self.play_video_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
+        self.file_size_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.download_path_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
+        self.play_video_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
 
     def on_mouse_enter_self(self, event):
         # super().on_mouse_enter_self(event)
@@ -158,27 +159,25 @@ class DownloadedVideo(Video):
     def on_mouse_leave_self(self, event):
         super().on_mouse_leave_self(event)
 
-        self.download_path_btn.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-
     def bind_widgets_events(self):
         super().bind_widgets_events()
 
         def on_mouse_enter_download_path_btn(_event):
-            self.download_path_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"])
+            self.download_path_btn.configure(text_color=ThemeManager.get_accent_color("hover"))
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_download_path_btn(_event):
-            self.download_path_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+            self.download_path_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
 
         self.download_path_btn.bind("<Enter>", on_mouse_enter_download_path_btn)
         self.download_path_btn.bind("<Leave>", on_mouse_leave_download_path_btn)
         
         def on_mouse_enter_play_video_btn(_event):
-            self.play_video_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"])
+            self.play_video_btn.configure(text_color=ThemeManager.get_accent_color("hover"))
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_play_video_btn(_event):
-            self.play_video_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+            self.play_video_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
 
         self.play_video_btn.bind("<Enter>", on_mouse_enter_play_video_btn)
         self.play_video_btn.bind("<Leave>", on_mouse_leave_play_video_btn)
@@ -186,7 +185,7 @@ class DownloadedVideo(Video):
     def place_widgets(self):
         super().place_widgets()
 
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.download_type_label.place(relx=1, x=-300 * scale, rely=0.3, anchor="w")
         self.file_size_label.place(relx=1, x=-300 * scale, rely=0.7, anchor="w")    
@@ -195,7 +194,7 @@ class DownloadedVideo(Video):
         self.play_video_btn.place(relx=1, x=-90 * scale, rely=0.5, anchor="w")
         
     def configure_widget_sizes(self, _event):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.info_frame.configure(
             width=(
                 self.master_frame.winfo_width() - (300 * scale) -

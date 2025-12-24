@@ -2,7 +2,7 @@ from typing import Any, List, Callable, Literal
 import customtkinter as ctk
 from widgets.components.accent_color_button import AccentColorButton
 from services import ThemeManager, LanguageManager
-from utils import SettingsValidateUtility
+from utils import SettingsValidateUtility, JsonUtility
 from settings import (
     AppearanceSettings
 )
@@ -17,63 +17,52 @@ class AppearancePanel(ctk.CTkFrame):
 
         super().__init__(
             master=master,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         self.theme_label = ctk.CTkLabel(
             master=self,
-            text="Theme",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash1_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
+        self.theme_data = JsonUtility.read_from_file("data\\themes.json")
+        self.theme_names = [language_name for language_name in self.theme_data.keys()]
         self.theme_combo_box = ctk.CTkComboBox(
             master=self,
-            values=[
-                LanguageManager.data[AppearanceSettings.themes[0]],
-                LanguageManager.data[AppearanceSettings.themes[1]]
-            ],
-            dropdown_fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
+            values=self.theme_names,
             command=self.apply_theme_mode,
-            width=140 * AppearanceSettings.settings["scale_r"],
-            height=28 * AppearanceSettings.settings["scale_r"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
+            width=140 * AppearanceSettings.get_scale("decimal"),
+            height=28 * AppearanceSettings.get_scale("decimal"),
         )
+        
+        """
         self.system_theme_check_box = ctk.CTkCheckBox(
             master=self,
-            text="Sync with OS",
             command=self.sync_theme_with_os,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
+        """
 
         self.accent_color_label = ctk.CTkLabel(
             master=self,
-            text="Accent color",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash2_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.accent_color_frame = ctk.CTkFrame(
             master=self,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         # add accent  color buttons
         self.accent_color_buttons: List[AccentColorButton] = []
-        for accent_color in AppearanceSettings.settings["settings_panel"]["accent_colors"].values():
+        for accent_color in AppearanceSettings.settings["accent"]["colors"]:
             button = AccentColorButton(
                 master=self.accent_color_frame,
                 text="",
-                fg_color=accent_color["normal"],
-                hover_color=accent_color["hover"],
+                fg_color=accent_color[0],
+                hover_color=accent_color[1],
                 size_change=4,
                 corner_radius=8,
             )
@@ -83,53 +72,40 @@ class AppearancePanel(ctk.CTkFrame):
         # add user custom accent color
         self.custom_accent_color_label = ctk.CTkLabel(
             master=self,
-            text="Custom Accent color",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
+
         self.dash3_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
+
         self.custom_accent_color_entry = ctk.CTkEntry(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         self.custom_accent_color_display_btn = ctk.CTkButton(
             master=self,
             text="",
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.custom_accent_color_apply_btn = ctk.CTkButton(
             master=self,
-            text="Apply",
             state="disabled",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
             command=self.apply_custom_accent_color
         )
 
         self.custom_accent_color_alert_text = ctk.CTkTextbox(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["warning_color"]["normal"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
             activate_scrollbars=False,
         )
 
         self.scale_label = ctk.CTkLabel(
             master=self,
-            text="Scale",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.dash4_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.scale_change_slider = ctk.CTkSlider(
@@ -142,28 +118,21 @@ class AppearancePanel(ctk.CTkFrame):
 
         self.scale_apply_btn = ctk.CTkButton(
             master=self,
-            text="Apply",
             state="disabled",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
             command=self.ask_to_restart
         )
 
         self.scale_value_entry = ctk.CTkEntry(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         self.opacity_label = ctk.CTkLabel(
             master=self,
-            text="Transparent",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.dash5_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
         )
 
         self.opacity_change_slider = ctk.CTkSlider(
@@ -176,14 +145,11 @@ class AppearancePanel(ctk.CTkFrame):
         
         self.opacity_value_entry = ctk.CTkEntry(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         
         self.settings_reset_button = ctk.CTkButton(
             master=self, 
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"], 
             command=self.reset_settings
         )    
 
@@ -197,6 +163,7 @@ class AppearancePanel(ctk.CTkFrame):
         self.set_widgets_fonts()
         self.set_widgets_texts()
         self.set_widgets_sizes()
+        self.set_widgets_colors()
         self.set_widgets_accent_color()
         self.place_widgets()
         self.bind_widgets_events()
@@ -207,16 +174,16 @@ class AppearancePanel(ctk.CTkFrame):
         LanguageManager.register_widget(self)
         
     def set_value_to_entry(self, entry: ctk.CTkEntry, value: str) -> None:
-        entry.delete(0, "end");
-        entry.insert(0, value);
+        entry.delete(0, "end")
+        entry.insert(0, value)
 
     def cancel_scale_settings_resetting(self):
-        self.scale_change_slider.set(AppearanceSettings.settings["scale"])
-        self.set_value_to_entry(self.scale_value_entry, f"{AppearanceSettings.settings["scale"]} %")
+        self.scale_change_slider.set(AppearanceSettings.get_scale("perentage"))
+        self.set_value_to_entry(self.scale_value_entry, f"{AppearanceSettings.get_scale("perentage")} %")
         
     def reset_settings(self):
-        self.apply_theme_mode(self.theme_combo_box.cget("values")[0])
-        self.theme_combo_box.set(self.theme_combo_box.cget("values")[0])
+        self.apply_theme_mode("Dark Default")
+        self.theme_combo_box.set("Dark Default")
         
         if not self.accent_color_buttons[0].pressed:
             self.accent_color_buttons[0].on_mouse_enter_self('event')
@@ -228,13 +195,14 @@ class AppearancePanel(ctk.CTkFrame):
         self.opacity_change_slider.set(100)
         self.set_value_to_entry(self.scale_value_entry, f"{100.0} %")
         
-        if AppearanceSettings.settings["scale"] != 100:
+        if AppearanceSettings.get_scale("perentage") != 100:
             from widgets import AlertWindow
-            scale = AppearanceSettings.settings["scale_r"]
+            scale = AppearanceSettings.get_scale("decimal")
             AlertWindow(
                 master=self.master.master,
                 original_configure_callback=self.master.master.run_geometry_changes_tracker,
                 alert_msg="scale_settings_reset_confirmation",
+                more_details="This changes happen in low level",
                 width=int(450 * scale),
                 height=int(130 * scale),
                 ok_button_display=True,
@@ -256,11 +224,9 @@ class AppearancePanel(ctk.CTkFrame):
         """
         Apply selected accent color.
         """
-        AppearanceSettings.settings["root"]["accent_color"] = {
-            "normal": button.fg_color,
-            "hover": button.hover_color,
-            "default": True
-        }
+        AppearanceSettings.settings["accent"]["selected"]["color"] = [button.fg_color, button.hover_color]
+        AppearanceSettings.settings["accent"]["selected"]["is_custom"] = False
+
         self.theme_settings_change_callback("accent_color")
         self.release_all_accent_color_buttons()
         button.set_pressed()
@@ -271,36 +237,38 @@ class AppearancePanel(ctk.CTkFrame):
         Apply custom accent color.
         """
         colors = self.custom_accent_color_entry.get().strip().replace(" ", "").split(",")
-        AppearanceSettings.settings["root"]["accent_color"] = {
-            "normal": colors[0],
-            "hover": colors[1],
-            "default": False
-        }
+        AppearanceSettings.settings["accent"]["selected"]["color"] = [colors[0], colors[1]]
+        AppearanceSettings.settings["accent"]["selected"]["is_custom"] = True
         self.release_all_accent_color_buttons()
         self.theme_settings_change_callback("accent_color")
         self.custom_accent_color_apply_btn.configure(state="disabled")
 
-    def apply_theme_mode(self, theme_mode: Literal["Dark", "Light", None]):
+    def apply_theme_mode(self, theme: Literal["Dark", "Light", None]):
         """
         Apply selected theme mode. Dark / Light
         """
-        AppearanceSettings.settings["root"]["theme_mode"] = self.theme_combo_box.cget("values").index(theme_mode)
-        self.theme_settings_change_callback("theme_mode")
+        theme_name = self.theme_data[theme]
+        if theme_name != AppearanceSettings.settings["theme"]["name"]:
+            AppearanceSettings.settings["theme"]["name"] = theme_name
+            AppearanceSettings.settings["theme"]["display_name"] = theme
+            self.theme_settings_change_callback(updated="theme")
 
+    """
     def sync_theme_with_os(self):
-        """
         Synchronize theme with the OS.
-        """
         self.system_theme_check_box.configure(command=self.disable_sync_theme_with_os)
         self.theme_combo_box.configure(state="disabled")
         AppearanceSettings.settings["root"]["theme_mode"] = 2
         self.theme_settings_change_callback("theme_mode")
+    """
 
     def disable_sync_theme_with_os(self):
         """
         Disable synchronization with the OS.
         """
-        self.system_theme_check_box.configure(command=self.sync_theme_with_os)
+        
+        # self.system_theme_check_box.configure(command=self.sync_theme_with_os)
+        
         self.theme_combo_box.configure(state="normal")
         AppearanceSettings.settings["root"]["theme_mode"] = (
             AppearanceSettings.themes.index(ctk.get_appearance_mode().lower())
@@ -312,8 +280,8 @@ class AppearancePanel(ctk.CTkFrame):
         Apply selected opacity value.
         """
         self.set_value_to_entry(self.opacity_value_entry, f"{opacity_value} %")
-        AppearanceSettings.settings["opacity"] = opacity_value
-        AppearanceSettings.settings["opacity_r"] = opacity_value / 100
+        AppearanceSettings.settings["window"]["opacity"]["percentage"] = opacity_value
+        AppearanceSettings.settings["window"]["opacity"]["decimal"] = opacity_value / 100
         self.theme_settings_change_callback("opacity")
 
     def change_scale(self, scale_value: int):
@@ -321,14 +289,14 @@ class AppearancePanel(ctk.CTkFrame):
         Change the scale value.
         """
         self.set_value_to_entry(self.scale_value_entry, f"{scale_value} %")
-        if scale_value != AppearanceSettings.settings["scale"]:
+        if scale_value != AppearanceSettings.get_scale("percentage"):
             self.scale_apply_btn.configure(state="normal")
         else:
             self.scale_apply_btn.configure(state="disabled")
 
     def ask_to_restart(self):
         from widgets import AlertWindow
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         AlertWindow(
             master=self.master.master,
             original_configure_callback=self.master.master.run_geometry_changes_tracker,
@@ -342,8 +310,8 @@ class AppearancePanel(ctk.CTkFrame):
 
     def apply_scale(self):
         scale_value = self.scale_change_slider.get()
-        AppearanceSettings.settings["scale"] = scale_value
-        AppearanceSettings.settings["scale_r"] = scale_value / 100
+        AppearanceSettings.set_scale("percentage", scale_value)
+        AppearanceSettings.set_scale("decimal", scale_value / 100)
         self.theme_settings_change_callback()
         self.restart_callback()
 
@@ -365,9 +333,9 @@ class AppearancePanel(ctk.CTkFrame):
             self.custom_accent_color_apply_btn.configure(state="normal")
         else:
             self.custom_accent_color_display_btn.configure(
-                fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-                hover_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            )
+                fg_color=ThemeManager.get_color_based_on_theme("background"),   
+                hover_color=ThemeManager.get_color_based_on_theme("background")
+            )     
             self.custom_accent_color_apply_btn.configure(state="disabled")
             
     def validate_scale_value(self, _event):
@@ -402,53 +370,119 @@ class AppearancePanel(ctk.CTkFrame):
             self.opacity_change_slider.set(value)
             self.apply_opacity(value)
 
-    def set_widgets_accent_color(self):
+    def set_widgets_colors(self):
         """
-        Set accent color for widgets.
+        Set colors for the widgets.
         """
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+
+        self.theme_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash1_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
         self.theme_combo_box.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            dropdown_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            dropdown_fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            dropdown_text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
-        self.custom_accent_color_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
+
+        """
         self.system_theme_check_box.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border")
+        )
+        """
+
+        self.accent_color_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash2_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.accent_color_frame.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+
+        self.custom_accent_color_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash3_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.custom_accent_color_entry.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+        )
+        self.custom_accent_color_display_btn.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.custom_accent_color_apply_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            text_color=ThemeManager.get_color_based_on_theme("background"),
         )
-        self.opacity_change_slider.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
+        self.custom_accent_color_alert_text.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_warning"),
         )
+
+        self.scale_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash4_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
         self.scale_change_slider.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-        )
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )     
         self.scale_value_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            border_color=ThemeManager.get_color_based_on_theme("border")
         )
         self.scale_apply_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            text_color=ThemeManager.get_color_based_on_theme("background"),
         )
+
+        self.opacity_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash5_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.opacity_change_slider.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )     
         self.opacity_value_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
+
         self.settings_reset_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+        )
+    
+    def update_widgets_colors(self):
+        """Update colors for the widgets."""
+        self.set_widgets_colors()
+
+    def set_widgets_accent_color(self):
+        """
+        Update accent color.
+        """
+        self.theme_combo_box.configure(
+            dropdown_hover_color=ThemeManager.get_accent_color("hover")
+        )
+        self.custom_accent_color_apply_btn.configure(
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
+        )
+
+        """
+        self.system_theme_check_box.configure(
+            checkmark_color=ThemeManager.get_accent_color("normal")
+        )
+        """
+
+        self.scale_change_slider.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
+        )
+        self.scale_apply_btn.configure(
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
+        )
+        
+        self.opacity_change_slider.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
         )
 
     def update_widgets_accent_color(self):
@@ -457,19 +491,16 @@ class AppearancePanel(ctk.CTkFrame):
         """
         self.set_widgets_accent_color()
 
-    def update_widgets_colors(self):
-        """Update colors for the widgets."""
-
     def place_widgets(self):
         """
         Place widgets on the frame.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         pady = 16 * scale
         self.theme_label.grid(row=0, column=0, padx=(100, 0), pady=(50, 0), sticky="w")
         self.dash1_label.grid(row=0, column=1, padx=(30, 30), pady=(50, 0), sticky="w")
         self.theme_combo_box.grid(row=0, column=2, pady=(50, 0), sticky="w")
-        self.system_theme_check_box.grid(row=0, column=3, padx=(20, 0), pady=(50, 0), sticky="w")
+        # self.system_theme_check_box.grid(row=0, column=3, padx=(20, 0), pady=(50, 0), sticky="w")
 
         self.accent_color_label.grid(row=1, column=0, padx=(100, 0), pady=(pady, 0), sticky="nw")
         self.dash2_label.grid(row=1, column=1, padx=(30, 30), pady=(pady, 0), sticky="nw")
@@ -508,20 +539,20 @@ class AppearancePanel(ctk.CTkFrame):
         self.settings_reset_button.grid(row=5, column=3, pady=(pady, 0), padx=(100 * scale, 0), sticky="w")
         
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.theme_combo_box.configure(width=140 * scale, height=28 * scale)
-        self.system_theme_check_box.configure(checkbox_width=24 * scale, checkbox_height=24 * scale)
+        # self.system_theme_check_box.configure(checkbox_width=24 * scale, checkbox_height=24 * scale)
 
         for accent_color_button in self.accent_color_buttons:
             accent_color_button.configure(width=30 * scale, height=30 * scale, corner_radius=6 * scale)
         self.custom_accent_color_display_btn.configure(width=30 * scale, height=30 * scale, corner_radius=6 * scale)
         self.custom_accent_color_entry.configure(width=140 * scale, height=28 * scale)
-        self.custom_accent_color_apply_btn.configure(width=50 * scale, height=24 * scale)
+        self.custom_accent_color_apply_btn.configure(width=80*scale, height=24 * scale)
         self.custom_accent_color_alert_text.configure(width=590 * scale, height=85 * scale)
         
         self.scale_change_slider.configure(width=180 * scale, height=18 * scale)
         self.scale_value_entry.configure(width=70 * scale, height=24 * scale)
-        self.scale_apply_btn.configure(width=50 * scale, height=24 * scale)
+        self.scale_apply_btn.configure(width=80*scale, height=24 * scale)
         self.opacity_change_slider.configure(width=180 * scale, height=18 * scale)
         self.opacity_value_entry.configure(width=70 * scale, height=24 * scale)
         
@@ -531,18 +562,12 @@ class AppearancePanel(ctk.CTkFrame):
         self.theme_label.configure(text=LanguageManager.data["theme"])
         
         self.theme_combo_box.configure(
-            values=[
-                LanguageManager.data[AppearanceSettings.themes[0]],
-                LanguageManager.data[AppearanceSettings.themes[1]]
-            ]
+            values = self.theme_names
         )
         
-        if AppearanceSettings.settings["root"]["theme_mode"] != 2:
-            self.theme_combo_box.set(
-                self.theme_combo_box.cget("values")[AppearanceSettings.settings["root"]["theme_mode"]]
-            )
+        self.theme_combo_box.set(AppearanceSettings.settings["theme"]["display_name"])
 
-        self.system_theme_check_box.configure(text=LanguageManager.data["sync_with_os"])
+        # self.system_theme_check_box.configure(text=LanguageManager.data["sync_with_os"])
         self.accent_color_label.configure(text=LanguageManager.data["accent_color"])
         self.custom_accent_color_label.configure(
             text=LanguageManager.data["custom_accent_color"]
@@ -565,7 +590,7 @@ class AppearancePanel(ctk.CTkFrame):
 
     def set_widgets_fonts(self):
         # Segoe UI, Open Sans
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         title_font = ("Segoe UI", 13 * scale, "bold")
         self.theme_label.configure(font=title_font)
         self.dash1_label.configure(font=title_font)
@@ -580,17 +605,16 @@ class AppearancePanel(ctk.CTkFrame):
 
         value_font = ("Segoe UI", 13 * scale, "normal")
         self.theme_combo_box.configure(font=value_font, dropdown_font=value_font)
-        self.system_theme_check_box.configure(font=value_font)
+        # self.system_theme_check_box.configure(font=value_font)
         self.custom_accent_color_entry.configure(font=value_font)
         self.custom_accent_color_alert_text.configure(font=value_font)
         self.scale_value_entry.configure(font=value_font)
         self.opacity_value_entry.configure(font=value_font)
 
-        button_font = ("Segoe UI", 13 * scale, "bold")
+        button_font = ("Segoe UI", 11 * scale, "bold")
         self.custom_accent_color_apply_btn.configure(font=button_font)
         self.scale_apply_btn.configure(font=button_font)
-        
-        self.settings_reset_button.configure(font=("Segoe UI", 11 * scale, "bold"))
+        self.settings_reset_button.configure(font=button_font)
 
     # set default values to widgets
     def set_widgets_values(self):
@@ -598,37 +622,32 @@ class AppearancePanel(ctk.CTkFrame):
         set values for widgets using saved settings.
         """
         self.custom_accent_color_alert_text.bind("<Key>", lambda e: "break")
-
-        if AppearanceSettings.settings["root"]["accent_color"]["default"]:
+        if AppearanceSettings.settings["accent"]["selected"]["is_custom"] == False:
             for button in self.accent_color_buttons:
-                if button.fg_color == AppearanceSettings.settings["root"]["accent_color"]["normal"] and \
-                        button.hover_color == AppearanceSettings.settings["root"]["accent_color"]["hover"]:
+                if button.fg_color == AppearanceSettings.settings["accent"]["selected"]["color"][0] and \
+                        button.hover_color == AppearanceSettings.settings["accent"]["selected"]["color"][1]:
                     button.on_mouse_enter_self("event")
                     button.set_pressed()
         else:
             # add default value to entry using data
             self.custom_accent_color_entry.insert(
                 "end",
-                AppearanceSettings.settings["root"]["accent_color"]["normal"] +
-                ", " + AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                AppearanceSettings.settings["accent"]["selected"]["color"][0] +
+                ", " + AppearanceSettings.settings["accent"]["selected"]["color"][1]
             )
             self.validate_custom_accent_color("event")
             self.custom_accent_color_apply_btn.configure(state="disabled")
 
-        if AppearanceSettings.settings["root"]["theme_mode"] == 2:
-            self.sync_theme_with_os()
-            self.system_theme_check_box.select()
-        elif AppearanceSettings.settings["root"]["theme_mode"] == 0:
-            self.theme_combo_box.set(self.theme_combo_box.cget("values")[0])
-        if AppearanceSettings.settings["root"]["theme_mode"] == 1:
-            self.theme_combo_box.set(self.theme_combo_box.cget("values")[1])
 
-        self.opacity_change_slider.set(AppearanceSettings.settings["opacity"])
+        self.theme_combo_box.set(AppearanceSettings.settings["theme"]["display_name"])
 
-        self.scale_change_slider.set(AppearanceSettings.settings["scale"])
-        self.scale_entry_previous_value = f"{AppearanceSettings.settings["scale"]} %"
-        self.set_value_to_entry(self.scale_value_entry, f"{AppearanceSettings.settings["scale"]} %")
-        self.set_value_to_entry(self.opacity_value_entry, f"{AppearanceSettings.settings["opacity"]} %")
+        self.opacity_change_slider.set(AppearanceSettings.get_opacity("percentage"))
+
+        self.scale_change_slider.set(AppearanceSettings.get_scale("percentage"))
+        self.scale_entry_previous_value = f"{AppearanceSettings.get_scale("percentage")} %"
+
+        self.set_value_to_entry(self.scale_value_entry, f"{AppearanceSettings.get_scale("percentage")} %")
+        self.set_value_to_entry(self.opacity_value_entry, f"{AppearanceSettings.get_opacity("percentage")} %")
 
     def bind_widgets_events(self):
         """
@@ -638,3 +657,66 @@ class AppearancePanel(ctk.CTkFrame):
         self.scale_value_entry.bind("<KeyRelease>", self.validate_scale_value)
         self.opacity_value_entry.bind("<KeyRelease>", self.validate_opacity_value)
         self.validate_custom_accent_color("event")
+
+        # Theme-based hover color functions
+        def on_mouse_enter_theme_combo_box(event_):
+            self.theme_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_theme_combo_box(event_):
+            self.theme_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.theme_combo_box.bind("<Enter>", on_mouse_enter_theme_combo_box)
+        self.theme_combo_box.bind("<Leave>", on_mouse_leave_theme_combo_box)
+
+        """
+        def on_mouse_enter_system_theme_check_box(event_):
+            print("Enter Mouse")
+            self.system_theme_check_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_system_theme_check_box(event_):
+            print("Leave Mouse")
+            self.system_theme_check_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.system_theme_check_box.bind("<Enter>", on_mouse_enter_system_theme_check_box)
+        self.system_theme_check_box.bind("<Leave>", on_mouse_leave_system_theme_check_box)
+        """
+
+        def on_mouse_enter_custom_accent_color_entry(event_):
+            self.custom_accent_color_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_custom_accent_color_entry(event_):
+            self.custom_accent_color_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.custom_accent_color_entry.bind("<Enter>", on_mouse_enter_custom_accent_color_entry)
+        self.custom_accent_color_entry.bind("<Leave>", on_mouse_leave_custom_accent_color_entry)
+
+        def on_mouse_enter_scale_value_entry(event_):
+            self.scale_value_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_scale_value_entry(event_):
+            self.scale_value_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.scale_value_entry.bind("<Enter>", on_mouse_enter_scale_value_entry)
+        self.scale_value_entry.bind("<Leave>", on_mouse_leave_scale_value_entry)
+
+
+        def on_mouse_enter_opacity_value_entry(event_):
+            self.opacity_value_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_opacity_value_entry(event_):
+            self.opacity_value_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.opacity_value_entry.bind("<Enter>", on_mouse_enter_opacity_value_entry)
+        self.opacity_value_entry.bind("<Leave>", on_mouse_leave_opacity_value_entry)

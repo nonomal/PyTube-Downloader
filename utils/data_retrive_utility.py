@@ -4,7 +4,7 @@ from typing import List, Dict
 from .json_utility import JsonUtility
 
 
-class DataRetriveUtility:
+class DataRetrieveUtility:
     CONTRIBUTORS_TEXT_URL = "https://raw.githubusercontent.com/Thisal-D/PyTube-Downloader/main/contributors.txt"
     VERSION_FILE_URL = "https://raw.githubusercontent.com/Thisal-D/PyTube-Downloader/main/VERSION"
 
@@ -18,7 +18,7 @@ class DataRetriveUtility:
         """
         contributors = []
         try:
-            data = requests.get(DataRetriveUtility.CONTRIBUTORS_TEXT_URL, timeout=5).text
+            data = requests.get(DataRetrieveUtility.CONTRIBUTORS_TEXT_URL, timeout=5).text
             for contributor_data in data.split("\n"):
                 try:
                     profile_url, username = contributor_data.split("@%@")
@@ -27,9 +27,9 @@ class DataRetriveUtility:
                         "user_name": username,
                     })
                 except Exception as error:
-                    print(f"data_retrive_utility.py L54 : {error}")
+                    print(f"data_retrieve_utility.py L54 : {error}")
         except Exception as error:
-            print(f"data_retrive_utility.py L43 : {error}")
+            print(f"data_retrieve_utility.py L43 : {error}")
             return None
         
         return contributors
@@ -43,7 +43,7 @@ class DataRetriveUtility:
             string: The latest version number.
         """
         try:
-            data = requests.get(DataRetriveUtility.VERSION_FILE_URL, timeout=5).text.strip()
+            data = requests.get(DataRetrieveUtility.VERSION_FILE_URL, timeout=5).text.strip()
             # Extract the version number from the string "VERSION = '2.0.2'"
             # Split at "=" and remove extra characters like spaces and quotes
             version = data.split('=')[1].strip().strip("'")
@@ -53,7 +53,8 @@ class DataRetriveUtility:
             return None
         
         return version
-    
+
+    @staticmethod
     def get_current_version():
         """
         Read current version from info.json file.
@@ -63,5 +64,3 @@ class DataRetriveUtility:
         """
         version = JsonUtility.read_from_file("data\\info.json")["version"]
         return version
-    
-    

@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Literal
 from utils import JsonUtility, FileUtility
 import os
 
@@ -8,278 +8,96 @@ class AppearanceSettings:
     A class to manage appearance settings for the application.
     """
     settings: Dict = {}
-    file_dir = f"data"
-    file_path = file_dir + "\\appearance.json"
-    backup_dir = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
-    backup_path = backup_dir + "\\appearance.json"
+    default_settings_directory = f"data"
+    default_settings_file = default_settings_directory + "\\appearance.json"
+    user_settings_directory = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
+    user_settings_file = user_settings_directory + "\\appearance.json"
     
     themes = ("dark", "light", "system")
     
     SETTINGS = {
-        "alert_window": {
-            "msg_color": {
-                "normal": "#ee0000"
-            },
-            "details": {
-                "normal": "#00ee00"
-            }
-        },
-        "context_menu": {
-            "text_color": [
-                "#101010",
-                "#eeeeee"
-            ]
-        },
-        "navigation_button": {
-            "fg_color": {
-                "hover": [
-                    "#f2f4f9",
-                    "#32373e"
-                ],
-                "normal": [
-                    "#e2e4e9",
-                    "#21262d"
-                ]
-            }
-        },
-        "navigation_frame": {
-            "fg_color": {
-                "hover": [
-                    "#ffffff",
-                    "#0a0c12"
-                ],
-                "normal": [
-                    "#ffffff",
-                    "#0a0c12"
-                ]
-            }
-        },
-        "opacity": 100,
-        "opacity_r": 1.0,
-        "radio_btn": {
-            "text_color": {
-                "hover": [
-                    "#606060",
-                    "#ffffff"
-                ],
-                "normal": [
-                    "#909090",
-                    "#939aa2"
-                ]
-            }
-        },
-        "root": {
-            "accent_color": {
-                "default": True,
-                "hover": "#5f4ff1",
-                "normal": "#412ff0"
-            },
-            "fg_color": {
-                "hover": [
-                    "#ffffff",
-                    "#0a0c12"
-                ],
-                "normal": [
-                    "#ffffff",
-                    "#0a0c12"
-                ]
-            },
-            "text_color": {
-                "hover": [
-                    "#0a0c12",
-                    "#ffffff"
-                ],
-                "normal": [
-                    "#0a0c12",
-                    "#ffffff"
-                ]
-            },
-            "theme_mode": 0
-        },
-        "scale": 100.0,
-        "scale_r": 1.0,
-        "settings_panel": {
-            "accent_colors": {
-                "0": {
-                    "hover": "#5f4ff1",
-                    "normal": "#412ff0"
-                },
-                "1": {
-                    "hover": "#903efb",
-                    "normal": "#7a14ff"
-                },
-                "2": {
-                    "hover": "#57A1EB",
-                    "normal": "#284CEA"
-                },
-                "3": {
-                    "hover": "#FF851B",
-                    "normal": "#FF7F11"
-                },
-                "4": {
-                    "hover": "#0cf749",
-                    "normal": "#22c14b"
-                },
-                "5": {
-                    "hover": "#03A9F4",
-                    "normal": "#039BE5"
-                },
-                "6": {
-                    "hover": "#9C27B0",
-                    "normal": "#8E24AA"
-                },
-                "7": {
-                    "hover": "#CDDC39",
-                    "normal": "#C0CA33"
-                },
-                "8": {
-                    "hover": "#009688",
-                    "normal": "#00796B"
-                },
-                "9": {
-                    "hover": "#FF5722",
-                    "normal": "#F4511E"
-                },
-                "a": {
-                    "hover": "#FF9800",
-                    "normal": "#F57C00"
-                },
-                "b": {
-                    "hover": "#795548",
-                    "normal": "#6D4C41"
-                },
-                "c": {
-                    "hover": "#607D8B",
-                    "normal": "#546E7A"
-                },
-                "d": {
-                    "hover": "#FF5252",
-                    "normal": "#E53935"
-                },
-                "e": {
-                    "hover": "#FF3D00",
-                    "normal": "#FFAB00"
-                },
-                "f": {
-                    "hover": "#7091e6",
-                    "normal": "#8697c4"
-                }
-            },
-            "nav_text_color": [
-                "#252525",
-                "#dddddd"
+        "accent": {
+            "__comment__": "Windows 11 Fluent accent colors (base, hover/pressed)",
+            "colors": [
+                    ["#0078D4", "#006CBE"],  # Blue 
+                    ["#0A84FF", "#006CFF"],  # Bright blue
+                    ["#0099BC", "#0082A5"],  # Cyan
+                    ["#00B7C3", "#009FAE"],  # Teal
+                    ["#107C10", "#0C660C"],  # Green
+                    ["#16C60C", "#13A30A"],  # Lime green
+                    ["#6B69D6", "#5957C4"],  # Indigo
+                    ["#886CE4", "#7555D9"],  # Violet 
+                    ["#B146C2", "#9D3AAE"],  # Orchid
+                    ["#E74856", "#D13438"],  # Red
+                    ["#FF5F5F", "#E14D4D"],  # Soft red
+                    ["#FF8C00", "#E57A00"],  # Orange
+                    ["#F7630C", "#DE5A0C"],  # Bright orange
+                    ["#FFB900", "#E5A500"],  # Amber
+                    ["#F9F1A5", "#EAE288"],  # Pale yellow
+                    ["#00CC6A", "#00B45C"]   # Emerald
             ],
-            "text_color": [
-                "#141212",
-                "#eeeeee"
-            ],
-            "warning_color": {
-                "hover": "#ff3131",
-                "normal": "#f95568"
+            "selected": {
+                "color": [
+                    "#886CE4",
+                    "#7555D9"
+                ],
+                "is_custom": False
+            }
+
+        },
+        "window": {
+            "__comment__": "Global window settings, common for light and dark modes",
+            "opacity": {
+                "decimal": 0.95,
+                "percentage": 95
+            },
+            "scale": {
+                "decimal": 1.0,
+                "percentage": 100.0
             }
         },
-        "url_adding_button": {
-            "fg_color": {
-                "hover": [
-                    "#ffffff",
-                    "#272c33"
-                ],
-                "normal": [
-                    "#f4f6fd",
-                    "#161b22"
-                ]
-            }
-        },
-        "url_entry": {
-            "border_color": {
-                "hover": [
-                    "#d0d7de",
-                    "#40464e"
-                ],
-                "normal": [
-                    "#d0d7de",
-                    "#30363d"
-                ]
-            },
-            "fg_color": {
-                "hover": [
-                    "#f9faff",
-                    "#21262d"
-                ],
-                "normal": [
-                    "#f6f8fa",
-                    "#161b22"
-                ]
-            },
-            "text_color": {
-                "hover": [
-                    "#1f2328",
-                    "#dddddd"
-                ],
-                "normal": [
-                    "#636c76",
-                    "#ffffff"
-                ]
-            }
-        },
-        "video_object": {
-            "btn_fg_color": {
-                "hover": [
-                    "#ffffff",
-                    "#2c2e34"
-                ],
-                "normal": [
-                    "#dedede",
-                    "#1b1d23"
-                ]
-            },
-            "btn_text_color": {
-                "hover": [
-                    "#202020",
-                    "#ffffff"
-                ],
-                "normal": [
-                    "#505050",
-                    "#aaaaaa"
-                ]
-            },
-            "error_color": {
-                "hover": "#ff3131",
-                "normal": "#ee0000"
-            },
-            "fg_color": {
-                "hover": [
-                    "#ffffff",
-                    "#161616"
-                ],
-                "normal": [
-                    "#eeeeee",
-                    "#121212"
-                ]
-            },
-            "remove_btn_text_color": {
-                "hover": [
-                    "#ffffff",
-                    "#ffffff"
-                ],
-                "normal": [
-                    "#cdcdcd",
-                    "#cdcdcd"
-                ]
-            },
-            "text_color": {
-                "hover": [
-                    "#707070",
-                    "#aaaaaa"
-                ],
-                "normal": [
-                    "#404040",
-                    "#bbbbbb"
-                ]
-            }
+        "theme": {
+            "display_name": "Dark Default",
+            "name": "dark"
         }
     }
 
+    @staticmethod
+    def get_opacity(type: Literal["decimal", "percentage"]) -> float | int:
+        """
+        Get the global window opacity setting.
+
+        Returns:
+            float | int : The opacity value as a float between 0.0 and 1.0 or 0 to 100.
+        """
+        # print(AppearanceSettings.settings["window"]["opacity"])
+        return AppearanceSettings.settings["window"]["opacity"][type]
+    
+    staticmethod
+    def get_scale(type: Literal["decimal", "percentage"]) -> float | int:
+        """
+        Get the global window opacity setting.
+
+        Returns:
+            float | int : The scale value as a float between 1.0 and 2.0 or 100 to 200.
+        """
+        return AppearanceSettings.settings["window"]["scale"][type]
+    
+    @staticmethod
+    def set_opacity(type: Literal["decimal", "percentage"], value: int | float) -> None:
+        """
+        Set the global window opacity setting.
+        """
+        AppearanceSettings.settings["window"]["opacity"][type] = value
+    
+    staticmethod
+    def set_scale(type: Literal["decimal", "percentage"], value: int | float) -> None:
+        """
+        Set the global window opacity setting.
+        """
+        AppearanceSettings.settings["window"]["scale"][type] = value
+    
+    
     @staticmethod
     def initialize() -> None:
             
@@ -291,10 +109,10 @@ class AppearanceSettings:
         if not backup_exists:
             AppearanceSettings.create_backup()
         
-        if backup_exists and FileUtility.is_accessible(AppearanceSettings.backup_dir):
-            AppearanceSettings.settings = JsonUtility.read_from_file(AppearanceSettings.backup_path)
+        if backup_exists and FileUtility.is_accessible(AppearanceSettings.user_settings_directory):
+            AppearanceSettings.settings = JsonUtility.read_from_file(AppearanceSettings.user_settings_file)
         else:
-            AppearanceSettings.settings = JsonUtility.read_from_file(AppearanceSettings.file_path)
+            AppearanceSettings.settings = JsonUtility.read_from_file(AppearanceSettings.default_settings_file)
         
         if not AppearanceSettings.are_all_keys_present(AppearanceSettings.SETTINGS, AppearanceSettings.settings):
             AppearanceSettings.add_missing_keys()
@@ -307,15 +125,15 @@ class AppearanceSettings:
         if not AppearanceSettings.is_backup_exists():
             AppearanceSettings.create_backup()
             
-        JsonUtility.write_to_file(AppearanceSettings.backup_path, AppearanceSettings.settings)
-        JsonUtility.write_to_file(AppearanceSettings.file_path, AppearanceSettings.settings)
+        JsonUtility.write_to_file(AppearanceSettings.user_settings_file, AppearanceSettings.settings)
+        # JsonUtility.write_to_file(AppearanceSettings.default_settings_file, AppearanceSettings.settings)
         
     @staticmethod                
     def is_backup_exists() -> bool:
         """
         Check is backup settings exists
         """
-        if os.path.exists(AppearanceSettings.backup_path):
+        if os.path.exists(AppearanceSettings.user_settings_file):
             return True
         return False
     
@@ -359,9 +177,9 @@ class AppearanceSettings:
 
     @staticmethod
     def create_backup() -> None:
-        FileUtility.create_directory(AppearanceSettings.backup_dir)
+        FileUtility.create_directory(AppearanceSettings.user_settings_directory)
         JsonUtility.write_to_file(
-            AppearanceSettings.backup_path,
+            AppearanceSettings.user_settings_file,
             JsonUtility.read_from_file("data\\appearance.json")
         )
         

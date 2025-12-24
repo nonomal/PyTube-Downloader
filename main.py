@@ -6,21 +6,22 @@ from settings import (
 import threading
 from services import (
     LanguageManager,
+    ThemeManager,
+    InformationManager
 )
-
 
 try:
     # configure settings
     GeneralSettings.initialize()
     AppearanceSettings.initialize()
     LanguageManager.initialize()
-
-    App.check_accessibility()
-
+    ThemeManager.initialize()
+    InformationManager.initialize()
+    
     # Initialize app.
     app = App()
     app.after(100, threading.Thread(target=app.initialize, daemon=True).start)
-    
+
     # just run the app        
     app.run()
 except Exception as error:

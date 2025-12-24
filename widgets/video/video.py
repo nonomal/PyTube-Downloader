@@ -175,22 +175,22 @@ class Video(ctk.CTkFrame):
 
     def set_widgets_fonts(self):
         """Set fonts for widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
-        self.thumbnail_btn.configure(font=("arial", int(14 * scale), "bold"))
-        self.video_length_label.configure(font=("arial", int(11 * scale), "bold"))
+        self.thumbnail_btn.configure(font=("Segoe UI", int(14 * scale), "bold"))
+        self.video_length_label.configure(font=("Segoe UI", int(11 * scale), "bold"))
 
-        self.video_title_label.configure(font=('arial', int(13 * scale), 'bold'))
-        self.channel_btn.configure(font=('arial', int(13 * scale), 'bold'))
-        font_style = ctk.CTkFont(family="arial", size=int(13 * scale), slant="italic", underline=True)
+        self.video_title_label.configure(font=('Segoe UI', int(13 * scale), 'bold'))
+        self.channel_btn.configure(font=('Segoe UI', int(13 * scale), 'bold'))
+        font_style = ctk.CTkFont(family="Segoe UI", size=int(13 * scale), slant="italic", underline=True)
         self.url_label.configure(font=font_style)
 
-        self.remove_btn.configure(font=("arial", 12 * scale, "bold"))
+        self.remove_btn.configure(font=("Segoe UI", 12 * scale, "bold"))
         self.context_menu.configure(font=("Segoe UI", 12 * scale, "bold"))
 
     def set_widgets_sizes(self):
         """Set sizes for widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.video_length_label.configure(height=1, width=1)
         self.info_frame.configure(height=self.height-3)
@@ -201,17 +201,17 @@ class Video(ctk.CTkFrame):
 
         self.remove_btn.configure(width=22 * scale, height=22 * scale, border_spacing=0)
         self.context_menu.configure(
-            width=int(130 * AppearanceSettings.settings["scale_r"]),
-            height=int(80 * AppearanceSettings.settings["scale_r"]),
+            width=int(130 * AppearanceSettings.get_scale("decimal")),
+            height=int(80 * AppearanceSettings.get_scale("decimal")),
         )
 
     def set_widgets_accent_color(self):
         """Set accent color for widgets."""
-        self.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.configure(border_color=ThemeManager.get_accent_color("normal"))
         self.thumbnail_btn.configure(
-            fg=(AppearanceSettings.settings["root"]["accent_color"]["normal"]),
+            fg=ThemeManager.get_accent_color("normal"),
         )
-        self.url_label.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.url_label.configure(text_color=ThemeManager.get_accent_color("normal"))
 
     def update_widgets_accent_color(self):
         """Update accent color for widgets."""
@@ -220,40 +220,37 @@ class Video(ctk.CTkFrame):
     def set_tk_widgets_colors(self):
         """Set colors for the Tk widgets."""
         self.thumbnail_btn.configure(
-            bg=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
-            ),
-            disabledforeground=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["text_color"]["normal"]
-            ),
-            activebackground=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
-            )
+            bg=ThemeManager.get_color_based_on_theme("primary"),
+            disabledforeground=ThemeManager.get_color_based_on_theme("text_muted"),
+            activebackground=ThemeManager.get_color_based_on_theme("primary")
         )
 
     def update_widgets_colors(self):
         """Update colors for widgets."""
         self.set_tk_widgets_colors()
+        self.set_widgets_colors()
 
     def set_widgets_colors(self):
         """Set colors for widgets."""
-        self.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("primary")),
         self.info_frame.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.video_length_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.video_title_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.channel_btn.configure(
-            text_color=AppearanceSettings.settings["video_object"]["btn_text_color"]["normal"],
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.remove_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
 
     def on_mouse_enter_self(self, event):
@@ -356,38 +353,38 @@ class Video(ctk.CTkFrame):
         
         def on_mouse_enter_channel_btn(_event):
             self.channel_btn.configure(
-                text_color=AppearanceSettings.settings["video_object"]["btn_text_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_channel_btn(_event):
             self.channel_btn.configure(
-                text_color=AppearanceSettings.settings["video_object"]["btn_text_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.channel_btn.bind("<Enter>", on_mouse_enter_channel_btn)
         self.channel_btn.bind("<Leave>", on_mouse_leave_channel_btn)
 
+        """
         def on_mouse_enter_remove_btn(_event):
             self.remove_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["error_color"]["hover"],
-                text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["hover"]
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_remove_btn(event):
             self.remove_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-                text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
             )
             self.on_mouse_leave_self(event)
 
         self.remove_btn.bind("<Enter>", on_mouse_enter_remove_btn)
         self.remove_btn.bind("<Leave>", on_mouse_leave_remove_btn)
+        """
 
     def place_widgets(self):
         """Place widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         thumbnail_width = int((self.height - 4) / 9 * 16)
         self.thumbnail_btn.place(x=5, y=1, width=thumbnail_width, height=self.height - 4)

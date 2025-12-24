@@ -1,153 +1,164 @@
-[![Chinese](https://img.shields.io/badge/Language-中文-red)](README_zh.md)
+# ⚡PyTube Downloader 
 
-# PyTube Downloader 
+[![Language: 中文](https://img.shields.io/badge/Language-中文-red)](README_zh.md)
+[![Download (Latest)](https://img.shields.io/sourceforge/dm/pytube-downloader.svg?label=Downloads)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![UI](https://img.shields.io/badge/UI-tkinter%2Bcustomtkinter-green)
 
+---
+
+### 🚀 Simple. Fast. Powerful YouTube Downloader.
+
+**PyTube Downloader** is a modern, user-friendly application that makes downloading YouTube videos and playlists effortless.
+With support for multiple formats, quality levels (144p–8K), and simultaneous downloads, it gives you **complete control** over your YouTube media experience.
+
+ 
 &nbsp; &nbsp;[![Download PyTube Downloader](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
+---
 
-&nbsp; &nbsp;[![Download PyTube Downloader](https://img.shields.io/sourceforge/dm/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download) [![Download PyTube Downloader](https://img.shields.io/sourceforge/dw/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download) [![Download PyTube Downloader](https://img.shields.io/sourceforge/dt/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
+## 🖥️ User Interface Preview
 
-&nbsp; &nbsp;![PyPI - License](https://img.shields.io/badge/license-MIT-blue)
-![LOC](https://tokei.rs/b1/github/Thisal-D/PyTube-Downloader?category=lines)
-
-[Visit to Download .exe for Windows](https://sourceforge.net/p/pytube-downloader) 
+![Preview](./readme%20assets/en-0.png) 
 
 ---
 
-**PyTube Downloader is a simple, user-friendly app that lets you easily download YouTube videos and entire playlists with one click. Choose from a variety of video and audio formats, including resolutions from 144p to 8K quality. It also supports simultaneous downloads, allowing you to save time and download multiple videos at once.**
+## ✨ Features
+
+* 🎞️ **Playlist Downloading** — Download entire playlists from a single URL.
+* 🎚️ **Format & Quality Selection** — Choose from multiple formats (MP4, MP3, etc.) and qualities (144p–8K).
+* 📊 **Progress Tracking** — Monitor downloads directly in the app.
+* ⚡ **Simultaneous Downloads** — Save time with multiple concurrent downloads.
+* ⚙️ **Automatic Downloads with Predefined Settings** — Set your preferred video quality, audio format, and download location once — PyTube will handle the rest.
+* 🗂️ **Dynamic Folder Organization** — Automatically sorts files by playlist, quality, or type.
+* 🌐 **Multi-Language Support** — Enjoy the app in your language:
+
+  | Language        | Contributor                                                                                         |
+  | --------------- | --------------------------------------------------------------------------------------------------- |
+  | English         | -                                                                                                   |
+  | 中文 (Chinese)    | [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
+  | සිංහල (Sinhala) | [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21)     |
+  | தமிழ் (Tamil)   | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma)   |
+
+  💡 **Help us [improve existing translations](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues)** or [**add new ones**](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language).
+* ⌨️ **Keyboard Shortcuts** — Control the app easily with quick-access shortcut keys.
 
 ---
 
-## Features
+## ⚙️ Tech Stack
 
-- **Playlist Downloading:** Download entire playlists using just the playlist URL.
-- **Format Selection:** Choose from various video and audio formats for downloading, from `144p` to `8K` quality.
-- **Progress Tracking:** Track the download progress within the application.
-- **Simultaneous Downloads:** Download multiple YouTube videos simultaneously, saving time and increasing efficiency. Users have full control over the number of simultaneous downloads, allowing for a personalized downloading experience.
-- **Automatic Download with Predefined Settings** Users can set predefined download settings such as preferred video quality, audio format, download location, and more. Once a YouTube URL is added, the video/playlist will load and then start to download automatically according to these predefined settings.
-  - *In playlist auto download mode, if any video fails to load, it will be ignored, and the download will continue with the remaining videos.*
-- **Dynamic Folder Organization:** Automatically organize downloaded files into separate directories based on factors such as video quality, file type (audio or video), and playlist name, ensuring efficient and structured storage.
-- **Multi-Language Support**: Enjoy the application in your preferred language with support for multiple languages.
-  - Currently Support Languages:
-    | Language      | Contributors |
-    | --------------| ------------ |
-    | `English`       | -            |
-    | `中文` (Chinese)| [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
-    | `සිංහල` (Sinhala)| [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) |
-    | `தமிழ்`(Tamil) | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) |
-
-  -  **Help us [``improve current languages``](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues) and [``add new languages``](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language) to this application.** 
-- **Shortcut Keys**: Take control of the application with  shortcut keys for common tasks.
----
-
-## Quick Start Guide
-
-1. Clone the repository to your local machine.
-    - Clone the repository to your local machine using:  
-      
-        ```bash
-        git clone https://github.com/Thisal-D/PyTube-Downloader.git
-        ```
-2. Download FFmpeg
-    - Visit the [FFmpeg website](https://ffmpeg.org/download.html) and download the appropriate version for your operating system.
-    - Extract the downloaded files and locate the ffmpeg.exe file. (`ffmpeg\bin\ffmpeg.exe`)
-    - Copy ffmpeg.exe into the ffmpeg folder located within the application directory. (`Pytube-Downloader\ffmpeg\`)
-3. Install Dependencies:
-    - If the application requires dependencies, run the following script to install them:
-     
-      ```bash
-      python dependencies_installer.py
-      ```
-4. Run the Application:
-    - Start the application by running:
-      
-       ```bash
-       python main.py
-       ```
-5. Paste the YouTube URL:
-    - Paste the URL of the YouTube video or playlist you want to download into the designated input field.
-6. Select Download Mode:
-    - Choose whether you want to download a single video or an entire playlist.
-7. Choose Format:
-    - Select the desired format (e.g., MP4, MP3) from the available options.
-8. Initiate Download:
-    - Click the Download button to start the download process.
-9. Monitor Progress:
-    - Watch the download progress within the application interface.
-10. Enjoy Your Video:
-    - Once the download is complete, find your file in the output directory and enjoy your YouTube video or audio!
+| Category          | Technologies                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------------ |
+| **Language**      | Python                                                                                           |
+| **Libraries**     | `tkinter`, `customtkinter`, `pytubefix`, `pillow`, `pyautogui`, `pystray`, `pyperclip`. `hPyT`, `win11toast`, `ctkchart` |
+| **External Tool** | `FFmpeg` (for video/audio processing)                                                            |
 
 ---
 
-## Technologies Used
+## 🧭 Quick Start Guide
 
-- **Programming Language:** 
-  - Python
-- **Python Libraries:** 
-  - tkinter
-  - customtkinter
-  - pytube
-  - pytubefix
-  - pillow
-  - pyautogui
-  - pystray
-  - pyperclip
-- **Dependencies**
-  - FFMPEG
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Thisal-D/PyTube-Downloader.git
+cd PyTube-Downloader
+```
+
+### 2️⃣ Install FFmpeg
+
+* Download from [FFmpeg.org](https://ffmpeg.org/download.html)
+* Extract and copy `ffmpeg.exe` into:
+
+  ```
+  PyTube-Downloader/ffmpeg/
+  ```
+
+### 3️⃣ Install Dependencies
+
+```bash
+python dependencies_installer.py
+python dependencies_updater.py
+```
+
+### 4️⃣ Run the Application
+
+```bash
+python main.py
+```
+
+### 5️⃣ Download Videos
+
+1. Paste a YouTube video or playlist URL.
+2. Choose **Single Video** or **Playlist Mode**.
+3. Select your desired **format and quality**.
+4. Click **Download** and track progress in real-time.
+5. Find your downloaded files in the output folder — ready to enjoy!
 
 ---
 
-## Project Structure
+## 📁 Project Structure
 
-Check out the [**Project Structure**](PROJECT_STRUCTURE.md) guide to understand the folder organization and code layout.
-
----
-
-## Dark Theme Preview 
-
-![0](./readme%20assets/en-0.png)
-![1](./readme%20assets/en-1.png)
-![2](./readme%20assets/en-2.png)
-![3](./readme%20assets/en-3.png)
-![4](./readme%20assets/en-4.png)
-![5](./readme%20assets/en-5.png)
-![6](./readme%20assets/en-6.png)
-![7](./readme%20assets/en-7.png)
-![8](./readme%20assets/en-8.png)
-![9](./readme%20assets/en-9.png)
+See [**Project Structure Guide**](PROJECT_STRUCTURE.md) for detailed folder and code layout information.
 
 ---
 
-## Star History
+## 🌙 Dark Theme Preview
+
+| Screenshots                      |
+| -------------------------------- |
+| ![1](./readme%20assets/en-0.png) |
+| ![2](./readme%20assets/en-1.png) |
+| ![3](./readme%20assets/en-2.png) |
+| ![4](./readme%20assets/en-3.png) |
+| ![5](./readme%20assets/en-4.png) |
+| ![6](./readme%20assets/en-5.png) |
+| ![7](./readme%20assets/en-6.png) |
+| ![8](./readme%20assets/en-7.png) |
+| ![9](./readme%20assets/en-8.png) |
+
+---
+
+## ⭐ Star History
 
 <picture> 
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=dark"> 
-    <img src="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=light" > 
-</picture> 
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=dark">
+  <img src="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=light">
+</picture>
 
 ---
 
-## Contribution
+## 🤝 Contribution
 
-Contributions to this project are welcome! Feel free to fork the repository, make improvements, and submit pull requests.
-
----
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Contributions are **highly appreciated**!
+Fork the repository, make your improvements, and submit a pull request.
 
 ---
 
-## Disclaimer
+## 📜 License
 
-This application is intended for personal use only. Please respect YouTube's terms of service and the rights of content creators when downloading videos.
+Licensed under the **MIT License**.
+See the [LICENSE](LICENSE) file for full details.
 
 ---
 
-## Contributors
+## ⚠️ Disclaimer
 
+This application is intended for **personal use only**.
+Please respect **YouTube’s Terms of Service** and content creators’ rights when downloading videos.
 
-- [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) [youyu](https://github.com/childeyouyu)
-- [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) [Navindu Pahasara](https://github.com/Navindu21)
-- [<img src="https://github.com/sooryasuraweera.png?size=25" width="25">](https://github.com/sooryasuraweera) [Soorya Suraweera](https://github.com/sooryasuraweera)
-- [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) [Fathima Asma](https://github.com/fathi-asma)
+---
+
+## 👥 Contributors
+
+| Contributor                                                                                                 | Profile                                                |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu)         | [youyu](https://github.com/childeyouyu)                |
+| [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21)             | [Navindu Pahasara](https://github.com/Navindu21)       |
+| [<img src="https://github.com/sooryasuraweera.png?size=25" width="25">](https://github.com/sooryasuraweera) | [Soorya Suraweera](https://github.com/sooryasuraweera) |
+| [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma)           | [Fathima Asma](https://github.com/fathi-asma)          |
+
+---
+
+<p align="center">
+<b>Made with ❤️</b>
+</p>

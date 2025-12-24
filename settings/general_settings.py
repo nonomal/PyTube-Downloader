@@ -8,10 +8,10 @@ class GeneralSettings:
     A class to manage general settings for the application.
     """
     settings: Dict = {}
-    file_dir = f"data"
-    file_path = file_dir + "\\general.json"
-    backup_dir = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
-    backup_path = backup_dir + "\\general.json"
+    default_settings_directory = f"data"
+    default_settings_file = default_settings_directory + "\\general.json"
+    user_settings_directory = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
+    user_settings_file = user_settings_directory + "\\general.json"
     default_download_dir = f"C:\\users\\{os.getlogin()}\\downloads\\PyTube Downloader\\"
 
     SETTINGS = {
@@ -52,10 +52,10 @@ class GeneralSettings:
         if not backup_exists:
             GeneralSettings.create_backup()
           
-        if backup_exists and FileUtility.is_accessible(GeneralSettings.backup_dir):
-            GeneralSettings.settings = JsonUtility.read_from_file(GeneralSettings.backup_path)
+        if backup_exists and FileUtility.is_accessible(GeneralSettings.user_settings_directory):
+            GeneralSettings.settings = JsonUtility.read_from_file(GeneralSettings.user_settings_file)
         else:
-            GeneralSettings.settings = JsonUtility.read_from_file(GeneralSettings.file_path)
+            GeneralSettings.settings = JsonUtility.read_from_file(GeneralSettings.default_settings_file)
             
         if not GeneralSettings.are_all_keys_present():
             GeneralSettings.add_missing_keys()
@@ -73,8 +73,8 @@ class GeneralSettings:
         if not GeneralSettings.is_backup_exists():
             GeneralSettings.create_backup()
             
-        JsonUtility.write_to_file(GeneralSettings.backup_path, GeneralSettings.settings)
-        JsonUtility.write_to_file(GeneralSettings.file_path, GeneralSettings.settings)
+        JsonUtility.write_to_file(GeneralSettings.user_settings_file, GeneralSettings.settings)
+        # JsonUtility.write_to_file(GeneralSettings.default_settings_file, GeneralSettings.settings)
     
     @staticmethod
     def restore_invalid_settings() -> None:
@@ -87,7 +87,7 @@ class GeneralSettings:
         """
         Check is backup settings exists
         """
-        if os.path.exists(GeneralSettings.backup_path):
+        if os.path.exists(GeneralSettings.user_settings_file):
             return True
         return False
     
@@ -103,7 +103,8 @@ class GeneralSettings:
             if key not in GeneralSettings.settings.keys():
                 return False
         return True
-    
+
+    @staticmethod
     def add_missing_keys() -> None:
         """
         Add any missing keys from the default settings to the initialized settings.
@@ -116,9 +117,9 @@ class GeneralSettings:
         
     @staticmethod 
     def create_backup() -> None:
-        FileUtility.create_directory(GeneralSettings.backup_dir)
+        FileUtility.create_directory(GeneralSettings.user_settings_directory)
         JsonUtility.write_to_file(
-            GeneralSettings.backup_path,
+            GeneralSettings.user_settings_file,
             JsonUtility.read_from_file("data\\general.json")
         )
         

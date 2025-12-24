@@ -51,14 +51,15 @@ class HistoryPanel(ctk.CTkFrame):
         self.playlists_frame_info_label_placed = False
         self.videos_frame_info_label_placed = False
         
-        self.history_video_width = 180 * AppearanceSettings.settings["scale_r"]
-        self.history_video_grid_pad_y = 2 * AppearanceSettings.settings["scale_r"]
-        self.history_video_grid_pad_x = 2 * AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
+        self.history_video_width = 180 * scale
+        self.history_video_grid_pad_y = 2 * scale
+        self.history_video_grid_pad_x = 2 * scale
         self.videos_per_row = 0
         
-        self.history_playlist_width = 180 * AppearanceSettings.settings["scale_r"]
-        self.history_playlist_grid_pad_y = 2 * AppearanceSettings.settings["scale_r"]
-        self.history_playlist_grid_pad_x = 2 * AppearanceSettings.settings["scale_r"]
+        self.history_playlist_width = 180 * scale
+        self.history_playlist_grid_pad_y = 2 * scale
+        self.history_playlist_grid_pad_x = 2 * scale
         self.playlists_per_row = 0
         
         self.histoy_videos_widgets = []
@@ -315,7 +316,7 @@ class HistoryPanel(ctk.CTkFrame):
             
     def place_nav_frame(self, frame: ctk.CTkScrollableFrame, frame_name: Literal["videos", "playlists"]) -> None:
         self.place_forget_nav_frames(except_frame=frame_name)
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         frame.place(y=10 + (25 * scale) + 10, x=0)
         self.place_nav_label(frame_name)
         
@@ -341,7 +342,7 @@ class HistoryPanel(ctk.CTkFrame):
             self.playlists_history_frame_info_label.place_forget()
     
     def set_widgets_sizes(self) -> None:
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.videos_button.configure(
             width=80*scale,
             height=25*scale
@@ -350,45 +351,50 @@ class HistoryPanel(ctk.CTkFrame):
             width=80*scale,
             height=25*scale
         )
+
+    def update_widgets_colors(self) -> None:
+        self.set_widgets_colors()
         
     def set_widgets_colors(self) -> None:
         self.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.videos_scrollable_frame.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.playlists_scrollable_frame.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
         )
-        
         self.videos_history_frame_info_label.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
         self.playlists_history_frame_info_label.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+        )
+        self.videos_button.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+        )
+        self.playlists_button.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         
     def set_widgets_accent_color(self) -> None:
         self.videos_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
         )
         self.playlists_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
         )
-        self.videos_history_frame_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.playlists_history_frame_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
+       
         
     def update_widgets_accent_color(self) -> None:
         """
@@ -400,13 +406,13 @@ class HistoryPanel(ctk.CTkFrame):
         self.set_widgets_texts()
     
     def place_widgets(self) -> None:
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.videos_button.place(x=0, y=10)
         self.playlists_button.place(x=(10 + 80) * scale, y=10)
     
     def set_widgets_fonts(self) -> None:
         # Segoe UI, Open Sans
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         button_font = ("Segoe UI", 11 * scale, "bold")
         self.videos_button.configure(font=button_font)
@@ -424,7 +430,7 @@ class HistoryPanel(ctk.CTkFrame):
     def configure_widgets_size(self, width: int = None, height: int = None) -> None:
         self.configure(width=width, height=height)
         
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         scrollable_frame_height = height - (10 + (25 * scale) + 14)
         
@@ -455,7 +461,7 @@ class HistoryPanel(ctk.CTkFrame):
                 _event (tk.Event): The event object.
             """
             self.videos_history_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
 
         def on_mouse_leave_videos_histroy_frame_info_label(_event: tk.Event) -> None:
@@ -469,7 +475,7 @@ class HistoryPanel(ctk.CTkFrame):
                 _event (tk.Event): The event object.
             """
             self.videos_history_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.videos_history_frame_info_label.bind("<Enter>", on_mouse_enter_videos_histroy_frame_info_label)
@@ -489,7 +495,7 @@ class HistoryPanel(ctk.CTkFrame):
                 _event (tk.Event): The event object.
             """
             self.playlists_history_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
 
         def on_mouse_leave_playlists_histroy_frame_info_label(_event: tk.Event) -> None:
@@ -503,7 +509,7 @@ class HistoryPanel(ctk.CTkFrame):
                 _event (tk.Event): The event object.
             """
             self.playlists_history_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.playlists_history_frame_info_label.bind("<Enter>", on_mouse_enter_playlists_histroy_frame_info_label)

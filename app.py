@@ -18,7 +18,6 @@ from widgets import (
     SettingPanel, 
     TrayMenu, 
     AlertWindow,
-    LowLevelAlertWindow,
     HistoryPanel
 )
 from widgets.core_widgets.context_menu import ContextMenu
@@ -39,7 +38,7 @@ from settings import (
 )
 from utils import (
     FileUtility,
-    DataRetriveUtility,
+    DataRetrieveUtility,
     ValueConvertUtility
 )
 
@@ -147,6 +146,8 @@ class App(ctk.CTk):
         
         self.current_max_download_speed_bytes = 0.00001
         self.current_download_speed_bytes = 0.00001
+
+        ThemeManager.register_widget(self)
         
     def set_initializing_status(self, status: str):
         def set_text(text: str):
@@ -161,25 +162,24 @@ class App(ctk.CTk):
         self.resizable(False, False)
         
         # Configure Some coliors for window
-        self.configure(fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"])
-        scale = AppearanceSettings.settings["scale_r"]
-        accent_color = AppearanceSettings.settings["root"]["accent_color"]["normal"]
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+        scale = AppearanceSettings.get_scale("decimal")
         
         # Create loading screen widgets
         self.initializing_frame = ctk.CTkFrame(
             master=self,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"])
+            fg_color=ThemeManager.get_color_based_on_theme("background"))
         self.initializing_logo_label = ctk.CTkLabel(
             master=self.initializing_frame, 
             text="⚡",
-            font=("arial", 40 * scale, "normal"),
-            text_color=accent_color
+            font=("Segoe UI", 40 * scale, "normal"),
+            text_color=ThemeManager.get_accent_color("normal")
         )
         self.initializing_state_label = ctk.CTkLabel(
             master=self.initializing_frame,
             text="State : Initializing",
-            font=("arial", 15 * scale, "bold"),
-            text_color=accent_color
+            font=("Segoe UI", 15 * scale, "bold"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.initializing_frame.place(relwidth=1, relheight=1)
         
@@ -209,12 +209,17 @@ class App(ctk.CTk):
         self.geometry(f"{loading_screen_width}x{loading_screen_height}+{x}+{y}")
 
     def initialize(self) -> None:
+        ctk.set_appearance_mode('dark')
+        ThemeManager.set_title_bar_style(self)
+
         # Set the main window attr
         self.create_initializing_status_window()
+        ThemeManager.set_title_bar_style(self)
+
         # set the app title
         self.title("PyTube Downloader")
         # configure alpha
-        self.attributes("-alpha", AppearanceSettings.settings["opacity_r"])
+        self.attributes("-alpha", AppearanceSettings.get_opacity("decimal"))
         # set the title icon
         self.iconbitmap("assets\\main icon\\512x512.ico")
         
@@ -222,7 +227,7 @@ class App(ctk.CTk):
         
         self.set_initializing_status("configuring_theme")
         # set the theme mode, dark or light or system, by getting from data
-        ctk.set_appearance_mode(AppearanceSettings.themes[AppearanceSettings.settings["root"]["theme_mode"]])
+        # ctk.set_appearance_mode(AppearanceSettings.themes[AppearanceSettings.settings["root"]["theme_mode"]])
         
         self.set_initializing_status("initializing_history")
         HistoryManager.initialize(
@@ -231,7 +236,7 @@ class App(ctk.CTk):
         )
 
         # deactivate the automatic scale
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.set_initializing_status("initializing_services")
         # configure services
@@ -288,6 +293,7 @@ class App(ctk.CTk):
         self.set_initializing_status("checking_updates")
         # place main widgets
         self.place_widgets()
+
         # place the app at the last placed geometry
         self.minsize(int(900 * scale), int(500 * scale))
         self.geometry(GeneralSettings.settings["window_geometry"])
@@ -300,6 +306,9 @@ class App(ctk.CTk):
         self.resizable(True, True)
         # Check app updates       
         self.run_update_check()
+        
+        ThemeManager.set_title_bar_style(self)
+
     
     def create_widgets(self) -> None:
         """
@@ -308,7 +317,7 @@ class App(ctk.CTk):
         This method sets up various widgets such as entry fields, radio buttons, buttons, scrollable frames, labels,
         and context menus. It also creates the settings panel and logo frame for the application.
         """
-        self.url_entry = ctk.CTkEntry(master=self, placeholder_text="Enter Youtube URL")
+        self.url_entry = ctk.CTkEntry(master=self, placeholder_text="Enter Youtube URL", border_width=1)
 
         self.video_radio_btn = ctk.CTkRadioButton(
             master=self,
@@ -327,8 +336,9 @@ class App(ctk.CTk):
         self.add_url_btn = ctk.CTkButton(
             master=self,
             text="Add +",
-            border_width=2,
-            command=self.add_video_playlist
+            border_width=1,
+            command=self.add_video_playlist,
+            hover=False,
         )
 
         self.added_content_scroll_frame = ctk.CTkScrollableFrame(master=self)
@@ -342,45 +352,44 @@ class App(ctk.CTk):
 
         self.navigate_added_btn = ctk.CTkButton(
             master=self,
-            text="Added",
+            border_width=1,
+            hover=False,
             command=lambda: self.place_nav_frame(self.added_content_scroll_frame, "added")
         )
 
         self.navigate_downloading_btn = ctk.CTkButton(
             master=self,
-            text="Downloading",
+            hover=False,
+            border_width=1,
             command=lambda: self.place_nav_frame(self.downloading_content_scroll_frame, "downloading")
         )
 
         self.navigate_downloaded_btn = ctk.CTkButton(
             master=self,
-            text="Downloaded",
+            border_width=1,
             command=lambda: self.place_nav_frame(self.downloaded_content_scroll_frame, "downloaded")
         )
         
         self.navigate_history_btn = ctk.CTkButton(
             master=self,
-            text="History",
+            hover=False,
+            border_width=1,
             command=lambda: self.place_nav_frame(self.history_content_frame, "history")
         )
 
         self.added_frame_info_label = ctk.CTkLabel(
             master=self,
-            text="Added videos & playlists will be display here.",
         )
 
         self.downloading_frame_info_label = ctk.CTkLabel(
             master=self,
-            text="Downloading videos & playlists will be display here.",
         )
 
         self.downloaded_frame_info_label = ctk.CTkLabel(
             master=self,
-            text="Downloaded videos & playlists will be display here.",
         )
 
         self.videos_status_count_label = ctk.CTkLabel(
-            text="Loading : 0 | Downloading : 0 | Converting : 0",
             master=self,
             anchor="w"
         )
@@ -389,16 +398,18 @@ class App(ctk.CTk):
             master=self
         )
         self.net_speed_chart = ctkchart.CTkLineChart(
-            master=self, y_axis_values=(0, 100), 
-            x_axis_values=tuple([sec for sec in range(0, 120)]),
+            master=self, 
+            y_axis_values=(0, 100), 
+            x_axis_values=tuple([sec for sec in range(1, 61)]),
             x_axis_data="S",
             y_axis_data="MB/s",
-            x_axis_label_count=0,
+            x_axis_label_count=1,
             y_axis_label_count=0,
         )
+
         self.net_speed_line = ctkchart.CTkLine(
             master=self.net_speed_chart,
-            fill="enabled"
+            fill="disabled"
         )
         
         self.net_speed_label = ctk.CTkLabel(
@@ -537,17 +548,17 @@ class App(ctk.CTk):
             frame_name (str): The name of the frame ('added', 'downloading', or 'downloaded').
         """
         self.place_forget_nav_frames(except_frame=frame_name)
-        frame.place(y=90 * AppearanceSettings.settings["scale_r"], x=10)
+        frame.place(y=90 * AppearanceSettings.get_scale("decimal"), x=10)
         self.place_nav_label(frame_name)
         
     def configure_navigation_panels(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         root_height = self.winfo_height()
         root_width = self.winfo_width()
         
-        frame_height = root_height - (100 + 25) * scale
-
+        frame_height = root_height - (120 + 25) * scale
+   
         if GeneralSettings.settings["display_download_speed_info"]:
             frame_height -= 90 * scale
         frame_width = root_width - 40
@@ -557,17 +568,17 @@ class App(ctk.CTk):
         self.history_content_frame.configure_widgets_size(height=frame_height, width=frame_width + 22)
     
     def show_net_speed_info(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         self.net_speed_temp_label.place_forget()
-        self.bottom_hr.place(rely=1, y=-100 * scale - (5 + 8 * scale))
-        self.net_speed_chart.place(x=10 + 300 * scale, rely=1, y=-100 * scale - 5)
+        self.bottom_hr.place(rely=1, y=-120 * scale - (5 + 8 * scale))
+        self.net_speed_chart.place(x=10 + 300 * scale, rely=1, y=-120 * scale - 5)
         self.net_speed_label.place(x=10, rely=1, y=-50 * scale)
         
         self.configure_navigation_panels()
         
     def hide_net_speed_info(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         self.bottom_hr.place_forget()
         self.net_speed_chart.place_forget()
@@ -590,7 +601,7 @@ class App(ctk.CTk):
         This method sets the position of various widgets such as buttons, entry fields, radio buttons, labels,
         and scrollable frames within the main window based on a predetermined layout.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.settings_btn.place(x=-5, y=4)
         self.url_entry.place(x=43 * scale, y=4)
         self.add_url_btn.place(y=4)
@@ -613,7 +624,10 @@ class App(ctk.CTk):
         This method configures the font settings for different GUI widgets such as entry fields, buttons, labels, etc.,
         based on a predetermined font style and size.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
+        
+        print(scale)
+
         self.url_entry.configure(
             font=ctk.CTkFont(
                 family="Segoe UI",
@@ -629,7 +643,7 @@ class App(ctk.CTk):
         self.add_url_btn.configure(font=("Segoe UI", 15 * scale, "bold"))
 
         font_style_1 = ctk.CTkFont(
-            family="Comic Sans MS",
+            family="Segoe UI",
             size=int(16 * scale),
             weight="bold",
             slant="italic"
@@ -643,19 +657,19 @@ class App(ctk.CTk):
         self.navigate_downloading_btn.configure(font=font_style_2)
         self.navigate_downloaded_btn.configure(font=font_style_2)
         self.navigate_history_btn.configure(font=font_style_2)
-        self.settings_btn.configure(font=("arial", 25 * scale, "normal"))
+        self.settings_btn.configure(font=("Segoe UI", 25 * scale, "normal"))
         self.context_menu.configure(font=("Segoe UI", 13 * scale, "bold"))
         self.videos_status_count_label.configure(font=("Segoe UI", 11 * scale, "normal"))
-        self.logo_label.configure(font=("arial", 50 * scale, "normal"))
+        self.logo_label.configure(font=("Segoe UI", 50 * scale, "normal"))
         
         self.net_speed_switch.configure(
-            font=("arial UI", 11 * scale, "bold")
+            font=("Segoe UI UI", 11 * scale, "bold")
         )
         self.net_speed_chart.configure(
-            axis_font_style=("arial", int(10 * scale), "normal"),
-            data_font_style=("arial", int(10 * scale), "bold")
+            axis_font_style=("Segoe UI", int(10 * scale), "normal"),
+            data_font_style=("Segoe UI", int(10 * scale), "bold")
         )
-        self.net_speed_label.configure(font=("arial", 15 * scale, "bold"))
+        self.net_speed_label.configure(font=("Segoe UI", 15 * scale, "bold"))
         self.net_speed_temp_label.configure(font=("Segoe UI", 11 * scale, "normal"))
         
     def set_widgets_sizes(self) -> None:
@@ -665,7 +679,7 @@ class App(ctk.CTk):
         This method configures the size settings for different GUI widgets such as entry fields, buttons,
         radio buttons, etc.,based on a predetermined scale value.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.url_entry.configure(height=int(40 * scale))
         self.video_radio_btn.configure(
             radiobutton_width=int(16 * scale),
@@ -686,8 +700,8 @@ class App(ctk.CTk):
         self.navigate_history_btn.configure(height=int(40 * scale))
         self.settings_btn.configure(width=int(30 * scale), height=int(40 * scale))
         self.context_menu.configure(
-            width=int(120 * AppearanceSettings.settings["scale_r"]),
-            height=int(130 * AppearanceSettings.settings["scale_r"])
+            width=int(120 * AppearanceSettings.get_scale("decimal")),
+            height=int(130 * AppearanceSettings.get_scale("decimal"))
         )
         self.videos_status_count_label.configure(height=int(15 * scale), width=int(300 * scale))
         
@@ -700,7 +714,7 @@ class App(ctk.CTk):
         
         self.net_speed_chart.configure(
             axis_size=int(2*scale),
-            height=int(100 * scale)
+            height=int(120 * scale)
         )
         self.net_speed_line.configure(
             size=int(2 * scale)
@@ -717,7 +731,7 @@ class App(ctk.CTk):
         scrollable frames, etc., based on the current size of the main window. It ensures that the widgets are
         appropriately sized and positioned to maintain a visually pleasing layout.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         root_width = self.winfo_width()
         self.url_entry.configure(width=root_width - 250 * scale)
         
@@ -799,6 +813,32 @@ class App(ctk.CTk):
     def update_widgets_text(self):
         self.set_widgets_texts()
 
+    def on_select_set_radio_btn_style(self, selected_radion_btn: Literal["playlist", "video"]) -> None:
+        """
+        Updates the style of radio buttons based on the selected option.
+
+        Args:
+            selected_radion_btn (str): The selected radio button option ('playlist' or 'video').
+        """
+
+        if selected_radion_btn == "playlist":
+            self.playlist_radio_btn.configure(
+                fg_color=ThemeManager.get_accent_color("normal")
+            )
+            self.video_radio_btn.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary")
+            )
+        elif selected_radion_btn == "video":
+            self.video_radio_btn.configure(
+                fg_color=ThemeManager.get_accent_color("normal")
+            )
+            self.playlist_radio_btn.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary")
+            )
+
+    def update_widgets_accent_color(self) -> None:
+        self.set_widgets_accent_color()
+
     def set_widgets_accent_color(self) -> None:
         """
         Sets the accent color for various GUI widgets.
@@ -807,53 +847,32 @@ class App(ctk.CTk):
         based on the current accent color setting in the application's appearance settings.
         """
         self.settings_btn.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            text_color=ThemeManager.get_accent_color("normal")
         )
         self.video_radio_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            fg_color=ThemeManager.get_accent_color("normal")
         )
         self.playlist_radio_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            fg_color=ThemeManager.get_accent_color("normal")
         )
         self.add_url_btn.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.navigate_added_btn.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.navigate_downloading_btn.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.navigate_downloaded_btn.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.navigate_history_btn.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.added_frame_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.downloading_frame_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.downloaded_frame_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            border_color=ThemeManager.get_accent_color("normal")
         )
         self.logo_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            text_color=ThemeManager.get_accent_color("normal")
         )
      
         self.net_speed_line.configure(
-            fill_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            color=ThemeManager.get_accent_color("normal")
         )
         
         self.net_speed_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            progress_color=ThemeManager.get_accent_color("normal"),
         )
+
+    def update_widgets_colors(self) -> None:
+        self.set_widgets_colors()
 
     def set_widgets_colors(self) -> None:
         """
@@ -862,111 +881,129 @@ class App(ctk.CTk):
         This method configures the color settings for different GUI widgets such as buttons, entry fields, radio buttons
         ,labels, etc., based on the current color settings in the application's appearance settings.
         """
-        self.configure(fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"])
+        # Main window background color
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
 
-        self.settings_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            hover=False
-        )
+        # Navigation buttons colors
+        self.navigate_added_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"))
+        self.navigate_downloading_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"))
+        self.navigate_downloaded_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"))
+        self.navigate_history_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"))
 
+        # Navigation buttons colors
+        self.navigate_added_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          border_color=ThemeManager.get_color_based_on_theme("border"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"),
+                                          text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.navigate_downloading_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          border_color=ThemeManager.get_color_based_on_theme("border"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"),
+                                          text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.navigate_downloaded_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          border_color=ThemeManager.get_color_based_on_theme("border"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"),
+                                          text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.navigate_history_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                                          border_color=ThemeManager.get_color_based_on_theme("border"),
+                                          bg_color=ThemeManager.get_color_based_on_theme("background"),
+                                          text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+
+        # Settings button colors
+        self.settings_btn.configure(fg_color=ThemeManager.get_color_based_on_theme("background"),
+                                    bg_color=ThemeManager.get_color_based_on_theme("background"))
+
+        # URL entry colors
         self.url_entry.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["url_entry"]["fg_color"]["normal"],
-            border_color=AppearanceSettings.settings["url_entry"]["border_color"]["normal"],
-            text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
         )
 
+        # Radio buttons colors
         self.video_radio_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            border_color=ThemeManager.get_color_based_on_theme("primary"),
         )
+
         self.playlist_radio_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            border_color=ThemeManager.get_color_based_on_theme("primary"),
         )
 
-        self.add_url_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["url_adding_button"]["fg_color"]["normal"],
-            hover=False
-        )
+        # Add URL button colors
+        self.add_url_btn.configure(bg_color=ThemeManager.get_color_based_on_theme("background"),
+                                   text_color=ThemeManager.get_color_based_on_theme("background"))
 
-        self.navigate_added_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"],
-            hover=False
-        )
-        self.navigate_downloading_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"],
-            hover=False
-        )
-        self.navigate_downloaded_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"],
-            hover=False
-        )
-        self.navigate_history_btn.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"],
-            hover=False
-        )
-
+        # Scrollable frames colors
         self.added_content_scroll_frame.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.downloading_content_scroll_frame.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         self.downloaded_content_scroll_frame.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["navigation_frame"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
         )
         
+        # Frame info labels colors
         self.added_frame_info_label.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
         self.downloading_frame_info_label.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
         self.downloaded_frame_info_label.configure(
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.videos_status_count_label.configure(
-            text_color=AppearanceSettings.settings["root"]["text_color"]["normal"]
-        )
-        self.logo_frame.configure(
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
+            bg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
     
-        self.net_speed_chart.configure(
-            fg_color=tuple(AppearanceSettings.settings["root"]["fg_color"]["normal"]),
-            bg_color=tuple(AppearanceSettings.settings["root"]["fg_color"]["normal"]),
-            axis_color=tuple(AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"]),
-            x_axis_font_color=tuple(AppearanceSettings.settings["root"]["text_color"]["normal"]),
-            y_axis_font_color=tuple(AppearanceSettings.settings["root"]["text_color"]["normal"]),
-            x_axis_data_font_color=tuple(AppearanceSettings.settings["root"]["text_color"]["normal"]),
-            y_axis_data_font_color=tuple(AppearanceSettings.settings["root"]["text_color"]["normal"])
+        self.videos_status_count_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
-        
+        self.logo_frame.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background")
+        )
+
+        self.net_speed_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )      
+       
+        self.net_speed_chart.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            bg_color=ThemeManager.get_color_based_on_theme("primary"),
+            axis_color=ThemeManager.get_color_based_on_theme("secondary"),
+            x_axis_data_font_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            y_axis_data_font_color=ThemeManager.get_color_based_on_theme("text_muted"),
+        )
+     
         self.bottom_hr.configure(
-            fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"],
-            bg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            bg_color=ThemeManager.get_color_based_on_theme("background")
         )
         
         self.net_speed_label.configure(
-            text_color=AppearanceSettings.settings["root"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         
         self.net_speed_temp_label.configure(
-            text_color=AppearanceSettings.settings["root"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
+
         
     def bind_widgets_events(self) -> None:
         """
@@ -996,9 +1033,8 @@ class App(ctk.CTk):
             text color, based on the current color settings in the application's appearance settings.
             """
             self.url_entry.configure(
-                fg_color=AppearanceSettings.settings["url_entry"]["fg_color"]["hover"],
-                border_color=AppearanceSettings.settings["url_entry"]["border_color"]["hover"],
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["hover"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                border_color=ThemeManager.get_accent_color("hover")
             )
 
         def on_mouse_leave_url_entry(_event: tk.Event) -> None:
@@ -1010,11 +1046,10 @@ class App(ctk.CTk):
             and text color based on the current  color settings in the application's appearance settings.
             """
             self.url_entry.configure(
-                fg_color=AppearanceSettings.settings["url_entry"]["fg_color"]["normal"],
-                border_color=AppearanceSettings.settings["url_entry"]["border_color"]["normal"],
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                border_color=ThemeManager.get_color_based_on_theme("border")
             )
-
+        
         self.url_entry.bind("<Enter>", on_mouse_enter_url_entry)
         self.url_entry.bind("<Leave>", on_mouse_leave_url_entry)
 
@@ -1027,7 +1062,7 @@ class App(ctk.CTk):
             This function is called when the mouse enters the settings button. It adjusts the text color of the settings
             button to reflect the hover state, using the accent color defined in the application's appearance settings.
             """
-            self.settings_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"])
+            self.settings_btn.configure(text_color=ThemeManager.get_accent_color("hover"))
 
         def on_mouse_leave_settings_btn(_event: tk.Event) -> None:
             """
@@ -1036,7 +1071,7 @@ class App(ctk.CTk):
             This function is called when the mouse leaves the settings button. It resets the text color of the settings
             button to its normal state, using the accent color defined in the application's appearance settings.
             """
-            self.settings_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+            self.settings_btn.configure(text_color=ThemeManager.get_accent_color("normal"))
 
         self.settings_btn.bind("<Enter>", on_mouse_enter_settings_btn)
         self.settings_btn.bind("<Leave>", on_mouse_leave_settings_btn)
@@ -1052,8 +1087,9 @@ class App(ctk.CTk):
             the application's appearance settings.
             """
             self.video_radio_btn.configure(
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["hover"],
-                fg_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_accent_color("hover"),
+                text_color=ThemeManager.get_color_based_on_theme("text_normal"),
             )
 
         def on_mouse_leave_video_radio_btn(_event: tk.Event) -> None:
@@ -1064,10 +1100,18 @@ class App(ctk.CTk):
             foreground color of the video radio button to their normal states, using the colors defined in the
             application's appearance settings.
             """
-            self.video_radio_btn.configure(
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"],
-                fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-            )
+            if self.selected_download_mode == "video":
+                self.video_radio_btn.configure(
+                    border_color=ThemeManager.get_color_based_on_theme("primary"),
+                    fg_color=ThemeManager.get_accent_color("normal"),
+                    text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+                )
+            else:
+                self.video_radio_btn.configure(
+                    border_color=ThemeManager.get_color_based_on_theme("primary"),
+                    fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                    text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+                )
 
         self.video_radio_btn.bind("<Enter>", on_mouse_enter_video_radio_btn)
         self.video_radio_btn.bind("<Leave>", on_mouse_leave_video_radio_btn)
@@ -1083,8 +1127,9 @@ class App(ctk.CTk):
             the application's appearance settings.
             """
             self.playlist_radio_btn.configure(
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["hover"],
-                fg_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_accent_color("hover"),
+                text_color=ThemeManager.get_color_based_on_theme("text_normal"),
             )
 
         def on_mouse_leave_playlist_radio_btn(_event: tk.Event) -> None:
@@ -1095,10 +1140,19 @@ class App(ctk.CTk):
             foreground color of the playlist radio button to their normal states, using the colors defined in the
             application's appearance settings.
             """
-            self.playlist_radio_btn.configure(
-                text_color=AppearanceSettings.settings["url_entry"]["text_color"]["normal"],
-                fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-            )
+            if self.selected_download_mode == "playlist":
+                self.playlist_radio_btn.configure(
+                    border_color=ThemeManager.get_color_based_on_theme("primary"),
+                    fg_color=ThemeManager.get_accent_color("normal"),
+                    text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+
+                )
+            else:
+                self.playlist_radio_btn.configure(
+                    border_color=ThemeManager.get_color_based_on_theme("primary"),
+                    fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                    text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+                )
 
         self.playlist_radio_btn.bind("<Enter>", on_mouse_enter_playlist_radio_btn)
         self.playlist_radio_btn.bind("<Leave>", on_mouse_leave_playlist_radio_btn)
@@ -1114,9 +1168,8 @@ class App(ctk.CTk):
             application's appearance settings.
             """
             self.add_url_btn.configure(
-                border_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                fg_color=AppearanceSettings.settings["url_adding_button"]["fg_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_accent_color("hover"),
             )
 
         def on_mouse_leave_add_video_playlist_btn(_event: tk.Event) -> None:
@@ -1128,9 +1181,8 @@ class App(ctk.CTk):
             the application's appearance settings.
             """
             self.add_url_btn.configure(
-                border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                fg_color=AppearanceSettings.settings["url_adding_button"]["fg_color"]["normal"]
+                border_color=ThemeManager.get_accent_color("normal"),
+                fg_color=ThemeManager.get_accent_color("normal"),
             )
 
         self.add_url_btn.bind("<Enter>", on_mouse_enter_add_video_playlist_btn)
@@ -1147,10 +1199,11 @@ class App(ctk.CTk):
             application's appearance settings.
             """
             self.navigate_added_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                text_color=ThemeManager.get_accent_color("hover"),
             )
-
+      
         def on_mouse_leave_navigate_added_frame_btn(_event: tk.Event) -> None:
             """
             Event handler for mouse leaving the navigate added frame button.
@@ -1160,10 +1213,11 @@ class App(ctk.CTk):
             appearance settings.
             """
             self.navigate_added_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                border_color=ThemeManager.get_color_based_on_theme("border"),
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
-
+    
         self.navigate_added_btn.bind("<Enter>", on_mouse_enter_navigate_added_frame_btn)
         self.navigate_added_btn.bind("<Leave>", on_mouse_leave_navigate_added_frame_btn)
 
@@ -1181,9 +1235,11 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_downloading_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                text_color=ThemeManager.get_accent_color("hover"),
             )
+      
 
         def on_mouse_leave_navigate_downloading_frame_btn(_event: tk.Event) -> None:
             """
@@ -1197,8 +1253,9 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_downloading_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                border_color=ThemeManager.get_color_based_on_theme("border"),
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.navigate_downloading_btn.bind("<Enter>", on_mouse_enter_navigate_downloading_frame_btn)
@@ -1218,9 +1275,11 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_downloaded_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                text_color=ThemeManager.get_accent_color("hover"),
             )
+      
 
         def on_mouse_leave_navigate_downloaded_frame_btn(_event: tk.Event) -> None:
             """
@@ -1234,8 +1293,9 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_downloaded_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                border_color=ThemeManager.get_color_based_on_theme("border"),
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.navigate_downloaded_btn.bind("<Enter>", on_mouse_enter_navigate_downloaded_frame_btn)
@@ -1255,9 +1315,11 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_history_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["hover"]
+                border_color=ThemeManager.get_accent_color("hover"),
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                text_color=ThemeManager.get_accent_color("hover"),
             )
+      
 
         def on_mouse_leave_navigate_history_frame_btn(_event: tk.Event) -> None:
             """
@@ -1271,8 +1333,9 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.navigate_history_btn.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-                fg_color=AppearanceSettings.settings["navigation_button"]["fg_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                border_color=ThemeManager.get_color_based_on_theme("border"),
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.navigate_history_btn.bind("<Enter>", on_mouse_enter_navigate_history_frame_btn)
@@ -1292,7 +1355,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.added_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
 
         def on_mouse_leave_added_frame_info_label(_event: tk.Event) -> None:
@@ -1306,7 +1369,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.added_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.added_frame_info_label.bind("<Enter>", on_mouse_enter_added_frame_info_label)
@@ -1326,7 +1389,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.downloading_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
 
         def on_mouse_leave_downloading_frame_info_label(_event: tk.Event) -> None:
@@ -1341,7 +1404,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.downloading_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.downloading_frame_info_label.bind("<Enter>", on_mouse_enter_downloading_frame_info_label)
@@ -1360,7 +1423,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.downloaded_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
 
         def mouse_ot_downloaded_frame_info_label(_event: tk.Event) -> None:
@@ -1375,7 +1438,7 @@ class App(ctk.CTk):
                 _event (tk.Event): The event object.
             """
             self.downloaded_frame_info_label.configure(
-                text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+                text_color=ThemeManager.get_color_based_on_theme("text_muted")
             )
 
         self.downloaded_frame_info_label.bind("<Enter>", on_mouse_enter_downloaded_frame_info_label)
@@ -1601,7 +1664,7 @@ class App(ctk.CTk):
         """
         Apply a fade effect to the application.
         """
-        fade_out_to = AppearanceSettings.settings["opacity_r"] - 0.15
+        fade_out_to = AppearanceSettings.get_opacity("decimal") - 0.15
         
         def fade_out(alpha):
             if alpha > fade_out_to:
@@ -1611,13 +1674,13 @@ class App(ctk.CTk):
                 fade_in(fade_out_to)
 
         def fade_in(alpha):
-            if AppearanceSettings.settings["opacity_r"] >= alpha:
+            if AppearanceSettings.get_opacity("decimal") >= alpha:
                 self.attributes("-alpha", alpha)
                 self.after(25, fade_in, alpha + 0.025)
             else:
-                self.attributes("-alpha", AppearanceSettings.settings["opacity_r"])
+                self.attributes("-alpha", AppearanceSettings.get_opacity("decimal"))
             
-        fade_out(AppearanceSettings.settings["opacity_r"])
+        fade_out(AppearanceSettings.get_opacity("decimal"))
         
     def scroll_frame_to_bottom(self, frame: ctk.CTkScrollableFrame):
         """
@@ -1639,7 +1702,7 @@ class App(ctk.CTk):
         AddedVideo(
             root=self,
             master=self.added_content_scroll_frame,
-            height=int(70 * AppearanceSettings.settings["scale_r"]),
+            height=int(70 * AppearanceSettings.get_scale("decimal")),
             width=self.added_content_scroll_frame.winfo_width(),
             # video url
             video_url=yt_url,
@@ -1660,7 +1723,7 @@ class App(ctk.CTk):
         AddedPlayList(
             root=self,
             master=self.added_content_scroll_frame,
-            height=int(86 * AppearanceSettings.settings["scale_r"]),
+            height=int(86 * AppearanceSettings.get_scale("decimal")),
             width=self.added_content_scroll_frame.winfo_width(),
 
             playlist_download_button_click_callback=self.download_playlist,
@@ -1704,7 +1767,7 @@ class App(ctk.CTk):
         DownloadingVideo(
             root=self,
             master=self.downloading_content_scroll_frame,
-            height=int(70 * AppearanceSettings.settings["scale_r"]),
+            height=int(70 * AppearanceSettings.get_scale("decimal")),
             width=self.downloading_content_scroll_frame.winfo_width(),
             # video info
             channel_url=video.channel_url,
@@ -1740,7 +1803,7 @@ class App(ctk.CTk):
         DownloadingPlayList(
             root=self,
             master=self.downloading_content_scroll_frame,
-            height=int(86 * AppearanceSettings.settings["scale_r"]),
+            height=int(86 * AppearanceSettings.get_scale("decimal")),
             width=self.downloading_content_scroll_frame.winfo_width(),
             # video info
             channel_url=playlist.channel_url,
@@ -1770,7 +1833,7 @@ class App(ctk.CTk):
         DownloadedVideo(
             root=self,
             master=self.downloaded_content_scroll_frame,
-            height=int(70 * AppearanceSettings.settings["scale_r"]),
+            height=int(70 * AppearanceSettings.get_scale("decimal")),
             width=self.downloaded_content_scroll_frame.winfo_width(),
 
             thumbnails=video.thumbnails,
@@ -1803,7 +1866,7 @@ class App(ctk.CTk):
         DownloadedPlayList(
             root=self,
             master=self.downloaded_content_scroll_frame,
-            height=86 * AppearanceSettings.settings["scale_r"],
+            height=86 * AppearanceSettings.get_scale("decimal"),
             width=self.downloaded_content_scroll_frame.winfo_width(),
             # playlist url
             channel_url=playlist.channel_url,
@@ -1852,11 +1915,11 @@ class App(ctk.CTk):
         self.net_speed_chart.configure(y_axis_data=y_axis_data, y_axis_values=(0, self.current_max_download_speed_bytes))
         
     def confgiure_chart_x_axis_values(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         if self.net_speed_chart.cget("width") / 10 * scale >= 60:
-            x_axis_point_count = 60
+            x_axis_point_count = 61
         else:
-            x_axis_point_count = 30
+            x_axis_point_count = 31
         
         
         style_type= (int(scale * 4), int(6 * scale))
@@ -1911,21 +1974,21 @@ class App(ctk.CTk):
 
     def update_appearance_settings(
             self,
-            updated: Literal["accent_color", "theme_mode", "opacity"] = None) -> None:
+            updated: Literal["accent_color", "theme", "opacity"] = None) -> None:
         """
         Update the theme settings based on the specified update.
 
         Args:
-            updated (Literal["accent_color", "theme_mode", "opacity"], optional):
+            updated (Literal["accent_color", "theme", "opacity"], optional):
                 The type of theme setting that was updated.
         """
         if updated == "accent_color":
-            self.set_widgets_accent_color()
             ThemeManager.update_accent_color()
-        if updated == "theme_mode":
-            ctk.set_appearance_mode(AppearanceSettings.themes[AppearanceSettings.settings["root"]["theme_mode"]])
+        if updated == "theme":
+            ThemeManager.update_theme()
+            ThemeManager.set_title_bar_style(self)
         if updated == "opacity":
-            self.attributes("-alpha", AppearanceSettings.settings["opacity_r"])
+            self.attributes("-alpha", AppearanceSettings.get_opacity("decimal"))
         AppearanceSettings.save_settings()
 
     def open_settings(self) -> None:
@@ -1995,7 +2058,7 @@ class App(ctk.CTk):
         Show a confirmation dialog before closing the application.
 
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         AlertWindow(
             master=self,
             original_configure_callback=self.run_geometry_changes_tracker,
@@ -2055,7 +2118,7 @@ class App(ctk.CTk):
     
     
     def show_update_alert(self, latest_version, current_version) -> None:
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         if latest_version is not None:
             if latest_version != current_version:
                 AlertWindow(
@@ -2076,8 +2139,8 @@ class App(ctk.CTk):
         Update the version of the application.
         """
         # Check the app is updated or not
-        latest_version = DataRetriveUtility.get_latest_version()
-        current_version = DataRetriveUtility.get_current_version()
+        latest_version = DataRetrieveUtility.get_latest_version()
+        current_version = DataRetrieveUtility.get_current_version()
         
         threading.Thread(target=self.show_update_alert, args=(latest_version, current_version), daemon=True).start()
                 
@@ -2088,35 +2151,6 @@ class App(ctk.CTk):
         # self.after(1, self.check_for_updates)
         self.check_for_updates()
 
-    def check_accessibility():
-        scale = AppearanceSettings.settings["scale_r"]
-        DIRECTORIES = [
-            GeneralSettings.settings["download_directory"],
-        ]
-        
-        def force_close():
-            sys.exit(0)
-        
-        for directory in DIRECTORIES:
-            # print("Checking Accesibility :", directory)
-            if not FileUtility.is_accessible(os.path.abspath(directory)):
-                alert_window= LowLevelAlertWindow(
-                    alert_msg="run_as_admin_mode",
-                    ok_button_display=True,
-                    ok_button_callback=force_close,
-                    callback=force_close,
-                    width=int(450 * scale),
-                    height=int(130 * scale)
-                ).mainloop()
-                    
-    def run_accessibility_check():
-        """
-        Run the accessibilit check in a separate thread.
-        """
-        #self.after(10, self.check_accessibility)
-        accesibility_check_thread = threading.Thread(target=App.check_accessibility, daemon=True)
-        accesibility_check_thread.start()
-    
     def manage_history_videos(self, no, channel, title, url, thumbnail_normal_path, thumbnail_hover_path, video_length, download_date, is_playlist_duplicated):
         """
         Manage the history videos.

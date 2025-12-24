@@ -22,81 +22,64 @@ class NetworkPanel(ctk.CTkFrame):
 
         super().__init__(
             master=master,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
 
         self.simultaneous_load_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash1_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.simultaneous_load_entry = ctk.CTkEntry(
             master=self,
             justify="right",
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.simultaneous_load_range_label = ctk.CTkLabel(
             master=self,
             text="(1-10)",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         #----------------------------------------------------------------------
         self.simultaneous_download_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash2_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.simultaneous_download_entry = ctk.CTkEntry(
             master=self,
             justify="right",
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.simultaneous_download_range_label = ctk.CTkLabel(
             master=self,
             text="(1-10)",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         #----------------------------------------------------------------------
         self.simultaneous_convert_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash3_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.simultaneous_convert_entry = ctk.CTkEntry(
             master=self,
             justify="right",
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         #----------------------------------------------------------------------
         self.automatic_download_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash4_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.automatic_download_switch_state = ctk.StringVar(value=None)
@@ -111,23 +94,18 @@ class NetworkPanel(ctk.CTkFrame):
 
         self.automatic_download_quality_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash5_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.automatic_download_quality_combo_box = ctk.CTkComboBox(
             master=self,
-            dropdown_fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
             command=self.change_automatic_download_quality,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            width=140 * AppearanceSettings.settings["scale_r"],
-            height=28 * AppearanceSettings.settings["scale_r"],
+            width=140 * AppearanceSettings.get_scale("decimal"),
+            height=28 * AppearanceSettings.get_scale("decimal"),
             values=DownloadManager.resolutions[::-1]
         )
 
@@ -137,13 +115,11 @@ class NetworkPanel(ctk.CTkFrame):
 
         self.load_thumbnail_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash6_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.load_thumbnail_switch_state = ctk.BooleanVar(value=None)
@@ -160,13 +136,11 @@ class NetworkPanel(ctk.CTkFrame):
         
         self.reload_automatically_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash7_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.reload_automatically_switch_state = ctk.BooleanVar(value=None)
@@ -183,13 +157,11 @@ class NetworkPanel(ctk.CTkFrame):
         
         self.re_download_automatically_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash8_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.re_download_automatically_switch_state = ctk.BooleanVar(value=None)
@@ -210,12 +182,10 @@ class NetworkPanel(ctk.CTkFrame):
             height=24,
             width=50,
             command=self.apply_network_settings,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         
         self.settings_reset_button = ctk.CTkButton(
             master=self, 
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
             command=self.reset_settings
         )
 
@@ -239,8 +209,9 @@ class NetworkPanel(ctk.CTkFrame):
         self.set_widgets_fonts()
         self.set_widgets_texts()
         self.set_widgets_sizes()
+        self.set_widgets_colors()
         self.place_widgets()
-        self.bind_widgets()
+        self.bind_widgets_events()
         self.configure_values()
 
         ThemeManager.register_widget(self)
@@ -376,10 +347,107 @@ class NetworkPanel(ctk.CTkFrame):
         else:
             self.apply_changes_button.configure(state="disabled")
 
-    def bind_widgets(self):
+    def bind_widgets_events(self):
         self.simultaneous_load_entry.bind("<KeyRelease>", self.simultaneous_load_count_check)
         self.simultaneous_download_entry.bind("<KeyRelease>", self.simultaneous_download_count_check)
         self.simultaneous_convert_entry.bind("<KeyRelease>", self.simultaneous_convert_count_check)
+
+        def on_mouse_enter_simultaneous_load_entry(event_):
+            self.simultaneous_load_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_simultaneous_load_entry(event_):
+            self.simultaneous_load_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.simultaneous_load_entry.bind("<Enter>", on_mouse_enter_simultaneous_load_entry)
+        self.simultaneous_load_entry.bind("<Leave>", on_mouse_leave_simultaneous_load_entry)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_simultaneous_download_entry(event_):
+            self.simultaneous_download_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_simultaneous_download_entry(event_):
+            self.simultaneous_download_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.simultaneous_download_entry.bind("<Enter>", on_mouse_enter_simultaneous_download_entry)
+        self.simultaneous_download_entry.bind("<Leave>", on_mouse_leave_simultaneous_download_entry)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_simultaneous_convert_entry(event_):
+            self.simultaneous_convert_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+            )
+        def on_mouse_leave_simultaneous_convert_entry(event_):
+            self.simultaneous_convert_entry.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            )
+        self.simultaneous_convert_entry.bind("<Enter>", on_mouse_enter_simultaneous_convert_entry)
+        self.simultaneous_convert_entry.bind("<Leave>", on_mouse_leave_simultaneous_convert_entry)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_automatic_download_switch(event_):
+            self.automatic_download_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_automatic_download_switch(event_):
+            self.automatic_download_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.automatic_download_switch.bind("<Enter>", on_mouse_enter_automatic_download_switch)
+        self.automatic_download_switch.bind("<Leave>", on_mouse_leave_automatic_download_switch)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_automatic_download_quality_combo_box(event_):
+            self.automatic_download_quality_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_automatic_download_quality_combo_box(event_):
+            self.automatic_download_quality_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.automatic_download_quality_combo_box.bind("<Enter>", on_mouse_enter_automatic_download_quality_combo_box)
+        self.automatic_download_quality_combo_box.bind("<Leave>", on_mouse_leave_automatic_download_quality_combo_box)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_load_thumbnail_switch(event_):
+            self.load_thumbnail_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_load_thumbnail_switch(event_):
+            self.load_thumbnail_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.load_thumbnail_switch.bind("<Enter>", on_mouse_enter_load_thumbnail_switch)
+        self.load_thumbnail_switch.bind("<Leave>", on_mouse_leave_load_thumbnail_switch)
+        #------------------------------------------------------------
+
+        def on_mouse_enter_reload_automatically_switch(event_):
+            self.reload_automatically_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_reload_automatically_switch(event_):
+            self.reload_automatically_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.reload_automatically_switch.bind("<Enter>", on_mouse_enter_reload_automatically_switch)
+        self.reload_automatically_switch.bind("<Leave>", on_mouse_leave_reload_automatically_switch)
+        #------------------------------------------------------------
+        
+        def on_mouse_enter_re_download_automatically_switch(event_):
+            self.re_download_automatically_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_re_download_automatically_switch(event_):
+            self.re_download_automatically_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.re_download_automatically_switch.bind("<Enter>", on_mouse_enter_re_download_automatically_switch)
+        self.re_download_automatically_switch.bind("<Leave>", on_mouse_leave_re_download_automatically_switch)
 
     # set default values to widgets
     def configure_values(self):
@@ -424,60 +492,130 @@ class NetworkPanel(ctk.CTkFrame):
             self.re_download_automatically_switch_state.set(True)
         else:
             self.re_download_automatically_switch_state.set(False)
+
+    def set_widgets_accent_color(self):
+        self.automatic_download_quality_combo_box.configure(
+            dropdown_hover_color=ThemeManager.get_accent_color("hover")
+        )
+
+        self.automatic_download_switch.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
+        )
+
+        self.load_thumbnail_switch.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
+        )
+
+        self.reload_automatically_switch.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
+        )
+        
+        self.re_download_automatically_switch.configure(
+            progress_color=ThemeManager.get_accent_color("normal"),
+        )
+
+        self.apply_changes_button.configure(
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
+        )
         
     def update_widgets_accent_color(self):
         self.set_widgets_accent_color()
 
-    def set_widgets_accent_color(self):
+    def set_widgets_colors(self):
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+
+        self.simultaneous_load_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash1_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
         self.simultaneous_load_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
         )
+        self.simultaneous_load_range_label.configure(        
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+        )
+        
+        self.simultaneous_download_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash2_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
         self.simultaneous_download_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
         )
-        self.simultaneous_convert_entry.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.automatic_download_info_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
-        )
-        self.automatic_download_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.automatic_download_quality_combo_box.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            dropdown_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.load_thumbnail_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.reload_automatically_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.re_download_automatically_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.settings_reset_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-        self.apply_changes_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+        self.simultaneous_download_range_label.configure(        
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
 
+        self.simultaneous_convert_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash3_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.simultaneous_convert_entry.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+        )
+        
+        self.automatic_download_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash4_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.automatic_download_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )        
+
+        self.automatic_download_quality_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash5_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.automatic_download_quality_combo_box.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            dropdown_fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            dropdown_text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )
+        self.automatic_download_info_label.configure(
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
+        )
+
+        self.load_thumbnail_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash6_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.load_thumbnail_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )        
+
+        self.reload_automatically_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash7_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.reload_automatically_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )        
+
+        self.re_download_automatically_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash8_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.re_download_automatically_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )        
+
+        self.apply_changes_button.configure(
+            text_color=ThemeManager.get_color_based_on_theme("background"),
+        )
+        self.settings_reset_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+        )
+
+    def update_widgets_colors(self):
+        """Update colors for the widgets."""
+        self.set_widgets_colors()
+
     def place_widgets(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         pady = 16 * scale
 
         self.simultaneous_load_label.grid(row=0, column=0, padx=(100, 0), pady=(50, 0), sticky="w")
@@ -524,7 +662,7 @@ class NetworkPanel(ctk.CTkFrame):
         self.settings_reset_button.grid(row=9, column=4, pady=(pady, 0), padx=(20*scale, 0), sticky="w")
         
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.simultaneous_load_entry.configure(width=140 * scale, height=28 * scale)
         self.simultaneous_download_entry.configure(width=140 * scale, height=28 * scale)
         self.simultaneous_convert_entry.configure(width=140 * scale, height=28 * scale)
@@ -533,7 +671,7 @@ class NetworkPanel(ctk.CTkFrame):
         self.load_thumbnail_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
         self.reload_automatically_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
         self.re_download_automatically_switch.configure(switch_width=36 * scale, switch_height=18 * scale)
-        self.apply_changes_button.configure(width=50 * scale, height=24 * scale)
+        self.apply_changes_button.configure(width=80 * scale, height=24 * scale)
         
         self.settings_reset_button.configure(width=80*scale, height=24 * scale)
 
@@ -576,7 +714,7 @@ class NetworkPanel(ctk.CTkFrame):
         self.set_widgets_texts()
 
     def set_widgets_fonts(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         title_font = ("Segoe UI", 13 * scale, "bold")
         self.simultaneous_load_label.configure(font=title_font)
         self.dash1_label.configure(font=title_font)
@@ -595,21 +733,15 @@ class NetworkPanel(ctk.CTkFrame):
         self.re_download_automatically_label.configure(font=title_font)
         self.dash8_label.configure(font=title_font)
         
-        
-        self.simultaneous_download_range_label.configure(font=title_font)
-        self.simultaneous_load_range_label.configure(font=title_font)
-
         value_font = ("Segoe UI", 13 * scale, "normal")
+        self.simultaneous_download_range_label.configure(font=value_font)
+        self.simultaneous_load_range_label.configure(font=value_font)
         self.simultaneous_download_entry.configure(font=value_font)
         self.simultaneous_load_entry.configure(font=value_font)
         self.simultaneous_convert_entry.configure(font=value_font)
         self.automatic_download_info_label.configure(font=value_font)
         self.automatic_download_quality_combo_box.configure(font=value_font, dropdown_font=value_font)
         
-        button_font = ("Segoe UI", 13 * scale, "bold")
+        button_font = ("Segoe UI", 11 * scale, "bold")
         self.apply_changes_button.configure(font=button_font)
-        
-        self.settings_reset_button.configure(font=("Segoe UI", 11 * scale, "bold"))
-
-    def update_widgets_colors(self):
-        """Update colors for the widgets."""
+        self.settings_reset_button.configure(font=button_font)

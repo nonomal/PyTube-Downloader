@@ -3,7 +3,7 @@ import tkinter as tk
 from typing import Tuple, Any, Union
 from PIL import Image
 import webbrowser
-from services import ThemeManager
+from services import ThemeManager, LanguageManager
 from settings import (
     AppearanceSettings
 )
@@ -22,11 +22,11 @@ class ContributorProfileWidget:
         self.profile_images = (
             ctk.CTkImage(
                 Image.open(profile_images_paths[0]),
-                size=(width * AppearanceSettings.settings["scale_r"], height * AppearanceSettings.settings["scale_r"])
+                size=(width * AppearanceSettings.get_scale("decimal"), height * AppearanceSettings.get_scale("decimal"))
             ),
             ctk.CTkImage(
                 Image.open(profile_images_paths[1]),
-                size=(width * AppearanceSettings.settings["scale_r"], height * AppearanceSettings.settings["scale_r"])
+                size=(width * AppearanceSettings.get_scale("decimal"), height * AppearanceSettings.get_scale("decimal"))
             )
         )
 
@@ -36,7 +36,6 @@ class ContributorProfileWidget:
             text="",
             command=lambda: webbrowser.open(profile_url),
             image=self.profile_images[0],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
         )
 
         self.user_name_button = ctk.CTkButton(
@@ -45,18 +44,12 @@ class ContributorProfileWidget:
             hover=False,
             width=1,
             command=lambda: webbrowser.open(profile_url),
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.profile_url_button = ctk.CTkButton(
             master=master,
-            text=profile_url,
             hover=False,
-            width=1,
             command=lambda: webbrowser.open(profile_url),
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.hr = tk.Frame(
@@ -71,13 +64,21 @@ class ContributorProfileWidget:
         self.set_widgets_sizes()
         self.bind_widgets_events()
         self.set_widgets_accent_color()
+        self.set_widgets_colors()
+        self.set_widgets_texts()
         ThemeManager.register_widget(self)
+        LanguageManager.register_widget(self)
 
     def bind_widgets_events(self):
         def on_mouse_enter(event_):
             self.profile_pic_button.configure(image=self.profile_images[1])
+            self.user_name_button.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+            self.profile_url_button.configure(fg_color=ThemeManager.get_accent_color("hover"))
+
         def on_mouse_leave(event_):
             self.profile_pic_button.configure(image=self.profile_images[0])
+            self.user_name_button.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+            self.profile_url_button.configure(fg_color=ThemeManager.get_accent_color("normal"))
                                               
         self.profile_pic_button.bind("<Enter>", on_mouse_enter)
         self.user_name_button.bind("<Enter>", on_mouse_enter)
@@ -89,7 +90,10 @@ class ContributorProfileWidget:
 
     def set_widgets_accent_color(self):
         self.hr.configure(
-            bg=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            bg=ThemeManager.get_accent_color("normal")
+        )
+        self.profile_url_button.configure(
+            fg_color=ThemeManager.get_accent_color("normal")
         )
         
     def update_widgets_accent_color(self):
@@ -97,20 +101,47 @@ class ContributorProfileWidget:
         
     def update_widgets_colors(self):
         """Update colors for the widgets."""
+        self.set_widgets_colors()
+
+    def set_widgets_colors(self):
+        self.profile_pic_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+        )
+
+        self.user_name_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background"),
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+        )
+
+        self.profile_url_button.configure(
+            text_color=ThemeManager.get_color_based_on_theme("background")
+        )
 
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.profile_pic_button.configure(
             width=self.width * scale,
             height=self.height * scale
         )
 
+        self.profile_url_button.configure(
+            width=1 * scale,
+            height=26 * scale,
+            corner_radius=(26 * scale) / 2  # half of height → half-circle sides
+        )
+    
+    def set_widgets_texts(self):
+        self.profile_url_button.configure(text=f"🔗 {LanguageManager.data["profile"]}")
+    
+    def update_widgets_text(self):
+        self.set_widgets_texts()
+
     def set_widgets_fonts(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         title_font = ("Segoe UI", 13 * scale, "bold")
         self.user_name_button.configure(font=title_font)
 
-        value_font = ("Segoe UI", 13 * scale, "normal")
+        value_font = ("Segoe UI", 11 * scale, "bold")
         self.profile_url_button.configure(font=value_font)
 
     def grid(
@@ -121,7 +152,7 @@ class ContributorProfileWidget:
                 Union[int, Tuple[int, int]],
                 Union[int, Tuple[int, int]],
                 Union[int, Tuple[int, int]]] = None) -> None:
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.profile_pic_button.grid(row=row, column=0, padx=padx[0] * scale, pady=pady * scale, sticky="w")
         self.user_name_button.grid(row=row, column=1, padx=padx[1] * scale, pady=pady * scale, sticky="w")
         self.profile_url_button.grid(row=row, column=2, padx=padx[2] * scale, pady=pady * scale, sticky="w")

@@ -99,8 +99,7 @@ class PlayList(ctk.CTkFrame):
         """Hide the videos in the playlist."""
         self.view_btn.configure(
             command=self.view_videos,
-            text=">",
-            font=('arial', 18 * AppearanceSettings.settings["scale_r"], 'bold')
+            text="⯈",
         )
         self.playlist_item_frame.pack_forget()
 
@@ -108,8 +107,7 @@ class PlayList(ctk.CTkFrame):
         """View the videos in the playlist."""
         self.view_btn.configure(
             command=self.hide_videos,
-            text="V",
-            font=('arial', 13 * AppearanceSettings.settings["scale_r"], 'bold')
+            text="⯆",
         )
         self.playlist_item_frame.pack(padx=10, fill="x", pady=2)
 
@@ -126,7 +124,7 @@ class PlayList(ctk.CTkFrame):
         self.playlist_main_frame = ctk.CTkFrame(master=self)
         self.view_btn = ctk.CTkButton(
             master=self.playlist_main_frame,
-            text=">",
+            text="⯈",
             hover=False,
             command=self.view_videos,
             state="disabled",
@@ -156,13 +154,13 @@ class PlayList(ctk.CTkFrame):
         self.previous_btn = ctk.CTkButton(
             master=self.playlist_item_frame,
             command=self.view_previous_videos,
-            text="<",
+            text="⯇",
             hover=False
         )
         self.next_btn = ctk.CTkButton(
             master=self.playlist_item_frame,
             command=self.view_next_videos,
-            text=">",
+            text="⯈",
             hover=False
         )
         self.tab_info_label = ctk.CTkLabel(master=self.playlist_item_frame, text='999 | 999')
@@ -200,7 +198,7 @@ class PlayList(ctk.CTkFrame):
             
         if len(self.videos) > PlayList.max_videos_per_page:
             self.playlist_item_frame.configure(
-                height=5 * (self.videos[0].height + 1) + 1 + 40 * AppearanceSettings.settings["scale_r"]
+                height=5 * (self.videos[0].height + 1) + 1 + 40 * AppearanceSettings.get_scale("decimal")
             )
             self.playlist_videos_frame.configure(height=5 * (self.videos[0].height + 1))
         elif len(self.videos) != 0:
@@ -277,24 +275,24 @@ class PlayList(ctk.CTkFrame):
 
     def set_widgets_fonts(self):
         """Set fonts for the widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
-        self.view_btn.configure(font=('arial', 18 * scale, 'bold'),)
-        self.playlist_title_label.configure(font=('arial', int(14 * scale), 'bold'))
-        self.channel_btn.configure(font=('arial', int(14 * scale), 'bold'))
-        font_style = ctk.CTkFont(family="arial", size=int(14 * scale), slant="italic", underline=True)
+        self.view_btn.configure(font=('Segoe UI', 17 * scale),)
+        self.playlist_title_label.configure(font=('Segoe UI', int(14 * scale), 'bold'))
+        self.channel_btn.configure(font=('Segoe UI', int(14 * scale), 'bold'))
+        font_style = ctk.CTkFont(family="Segoe UI", size=int(14 * scale), slant="italic", underline=True)
         self.url_label.configure(font=font_style)
-        self.remove_btn.configure(font=("arial", 12 * scale, "bold"),)
-        self.playlist_video_count_label.configure(font=("arial", 13 * scale, "bold"))
+        self.remove_btn.configure(font=("Segoe UI", 12 * scale, "bold"),)
+        self.playlist_video_count_label.configure(font=("Segoe UI", 13 * scale, "bold"))
         
-        navigate_btn_font_style = ("arial", 11 * scale, "bold")
+        navigate_btn_font_style = ("Segoe UI", 12 * scale, "bold")
         self.next_btn.configure(font=navigate_btn_font_style)
         self.previous_btn.configure(font=navigate_btn_font_style)
         self.tab_info_label.configure(font=navigate_btn_font_style)
 
     def set_widgets_sizes(self):
         """Set sizes for the widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.playlist_main_frame.configure(border_width=1, height=self.height, width=self.width)
         self.view_btn.configure(width=1, height=1)
@@ -313,19 +311,19 @@ class PlayList(ctk.CTkFrame):
     def set_widgets_accent_color(self):
         """Set accent color for the widgets."""
         self.playlist_main_frame.configure(
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+            border_color=ThemeManager.get_accent_color("normal")
         )
-        self.view_btn.configure(text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        self.url_label.configure(
-            text_color=AppearanceSettings.settings["root"]["accent_color"]["normal"]
+        self.view_btn.configure(
+            text_color=ThemeManager.get_accent_color("normal")
         )
+        self.url_label.configure(text_color=ThemeManager.get_accent_color("normal"))
         self.next_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
         )
         self.previous_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover"),
         )
 
     def update_widgets_accent_color(self):
@@ -335,61 +333,57 @@ class PlayList(ctk.CTkFrame):
     def set_tk_widgets_colors(self):
         """Set colors for the Tk widgets."""
         self.playlist_title_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.channel_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"],
-        )
-        self.url_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
 
     def update_widgets_colors(self):
         """Update colors for the widgets."""
         self.set_tk_widgets_colors()
+        self.set_widgets_colors()
 
     def set_widgets_colors(self):
         """Set colors for the widgets."""
         self.configure(
-            fg_color=self.master_frame.cget("fg_color")
+            fg_color=ThemeManager.get_color_based_on_theme("background")
         )
         self.playlist_item_frame.configure(
-            fg_color=self.master_frame.cget("fg_color")
+            fg_color=ThemeManager.get_color_based_on_theme("background")
         )
         self.playlist_main_frame.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background")
         )
         self.info_frame.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.view_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"],
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.playlist_main_frame.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
-        )
-        self.view_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
         )
         self.remove_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.playlist_video_count_label.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
         self.playlist_videos_frame.configure(
-            fg_color=self.master_frame.cget("fg_color")
+            fg_color=ThemeManager.get_color_based_on_theme("background")
         )
         self.next_btn.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.previous_btn.configure(
-            text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
         )
         self.tab_info_label.configure(
-           text_color=AppearanceSettings.settings["video_object"]["text_color"]["normal"]
+           text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
 
     def on_mouse_enter_self(self, event):
@@ -479,42 +473,54 @@ class PlayList(ctk.CTkFrame):
         
         def on_mouse_enter_channel_btn(_event):
             self.channel_btn.configure(
-                text_color=ThemeManager.get_color_based_on_theme_mode(
-                    AppearanceSettings.settings["video_object"]["btn_text_color"]["hover"]
-                ),
+                text_color=ThemeManager.get_color_based_on_theme("text_normal")
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_channel_btn(_event):
             self.channel_btn.configure(
-                text_color=ThemeManager.get_color_based_on_theme_mode(
-                    AppearanceSettings.settings["video_object"]["btn_text_color"]["normal"]
-                ),
+                text_color=ThemeManager.get_color_based_on_theme("text_muted"),
             )
 
         self.channel_btn.bind("<Enter>", on_mouse_enter_channel_btn)
         self.channel_btn.bind("<Leave>", on_mouse_leave_channel_btn)
 
+        #-----------------------------------------------------------------
+
+        def on_mouse_enter_view_btn(_event):
+            self.view_btn.configure(
+                text_color=ThemeManager.get_accent_color("hover")
+            )
+            # self.on_mouse_enter_self(event)
+
+        def on_mouse_leave_view_btn(_event):
+            self.view_btn.configure(
+                text_color=ThemeManager.get_accent_color("normal"),
+            )
+
+        self.view_btn.bind("<Enter>", on_mouse_enter_view_btn)
+        self.view_btn.bind("<Leave>", on_mouse_leave_view_btn)
+
+        """
         def on_mouse_enter_remove_btn(_event):
             self.remove_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["error_color"]["hover"],
-                text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["hover"]
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning_hover")
             )
             # self.on_mouse_enter_self(event)
 
         def on_mouse_leave_remove_btn(_event):
             self.remove_btn.configure(
-                fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-                text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning")
             )
 
         self.remove_btn.bind("<Enter>", on_mouse_enter_remove_btn)
         self.remove_btn.bind("<Leave>", on_mouse_leave_remove_btn)
-
+        """
+        
     # place widgets
     def place_widgets(self):
         """Place the widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
 
         self.playlist_main_frame.pack(fill="x")
         self.view_btn.place(rely=0.7, x=15 * scale, anchor="w")

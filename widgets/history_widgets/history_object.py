@@ -103,13 +103,13 @@ class HistoryObject(ctk.CTkFrame):
     def bind_widgets_events(self):
         def on_mouse_enter_self(event):
             try:
-                self.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["hover"])
+                self.configure(border_color=ThemeManager.get_accent_color("hover"))
                 self.thumbnail_button.configure(image=self.thumbnail_hover)
             except:
                 pass
         def on_mouse_leave_self(event):
             try:
-                self.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+                self.configure(border_color=ThemeManager.get_accent_color("normal"))
                 self.thumbnail_button.configure(image=self.thumbnail_normal)
             except:
                 pass
@@ -128,12 +128,12 @@ class HistoryObject(ctk.CTkFrame):
         
         self.download_date_label.bind("<Enter>", on_mouse_enter_self)
         self.download_date_label.bind("<Leave>", on_mouse_leave_self)
-        
+
+        """
         def on_mouse_enter_remove_btn(_event):
             try:
                 self.remove_btn.configure(
-                    fg_color=AppearanceSettings.settings["video_object"]["error_color"]["hover"],
-                    text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["hover"]
+                    fg_color=ThemeManager.get_color_based_on_theme("background_Warning_hover"),
                 )
             except Exception as error:
                 pass
@@ -141,15 +141,15 @@ class HistoryObject(ctk.CTkFrame):
         def on_mouse_leave_remove_btn(_event):
             try:
                 self.remove_btn.configure(
-                    fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-                    text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+                    fg_color=ThemeManager.get_color_based_on_theme("background_Warning"),
                 )
             except Exception as error:
                 pass
 
         self.remove_btn.bind("<Enter>", on_mouse_enter_remove_btn)
         self.remove_btn.bind("<Leave>", on_mouse_leave_remove_btn)
-        
+        """
+
     def create_widgets(self):
         self.thumbnail_button = tk.Button(master=self, text="", relief="sunken", bd=0, cursor="hand2", command=lambda: webbrowser.open(self.url))
         self.remove_btn = ctk.CTkButton(master=self, text="X", command=self.kill, hover=False, corner_radius=4)
@@ -160,7 +160,7 @@ class HistoryObject(ctk.CTkFrame):
         self.download_btn = ctk.CTkButton(master=self.label_frame, text="Download", command=lambda: self.add_to_download_callback(self.url))
         
     def place_widgets(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.remove_btn.place(x=self.width-2, y=5 , anchor="ne")
         self.thumbnail_button.place(x=1, y=3)
             
@@ -175,39 +175,42 @@ class HistoryObject(ctk.CTkFrame):
     
     def set_widgets_colors(self):
         """Set colors for widgets."""
-        self.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
-        self.label_frame.configure(fg_color=AppearanceSettings.settings["video_object"]["fg_color"]["normal"])
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
+        self.label_frame.configure(fg_color=ThemeManager.get_color_based_on_theme("primary"))
         self.remove_btn.configure(
-            fg_color=AppearanceSettings.settings["video_object"]["error_color"]["normal"],
-            text_color=AppearanceSettings.settings["video_object"]["remove_btn_text_color"]["normal"]
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            hover_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+        )
+        self.title_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.channel_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.download_date_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))
+        self.download_btn.configure(
+            text_color=ThemeManager.get_color_based_on_theme("background"),
         )
     
     def tk_widgets_colors(self):
         self.thumbnail_button.configure(
-            bg=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
-            ),
-            disabledforeground=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["text_color"]["normal"]
-            ),
-            activebackground=ThemeManager.get_color_based_on_theme_mode(
-                AppearanceSettings.settings["video_object"]["fg_color"]["normal"]
-            )
+            bg=ThemeManager.get_color_based_on_theme("primary"),
+            disabledforeground=ThemeManager.get_color_based_on_theme("text_muted"),
+            activebackground=ThemeManager.get_color_based_on_theme("primary")
         )
         
     def update_widgets_colors(self):
         """Update colors for widgets."""
         self.tk_widgets_colors()
+        self.set_widgets_colors()
         if self.default_thumbnail_used:
             self.configure_default_thumbnails()
+        
 
     def set_widgets_accent_color(self):
         """Set accent color for widgets."""
 
-        self.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
+        self.configure(border_color=ThemeManager.get_accent_color("normal"))
         self.download_btn.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            fg_color=ThemeManager.get_accent_color("normal"),
+            hover_color=ThemeManager.get_accent_color("hover")
         )
 
     def update_widgets_accent_color(self):
@@ -216,7 +219,7 @@ class HistoryObject(ctk.CTkFrame):
         
     def set_widgets_sizes(self):
         """Set sizes for widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         width = self.width
         height = 15 * scale
@@ -241,13 +244,13 @@ class HistoryObject(ctk.CTkFrame):
         
     def set_widgets_fonts(self):
         """Set fonts for widgets."""
-        scale = AppearanceSettings.settings["scale_r"]
-        self.remove_btn.configure(font=("arial", 10 * scale, "bold"))
-        self.title_label.configure(font=('arial', int(11 * scale), 'bold'))
-        self.channel_label.configure(font=('arial', int(10 * scale), 'bold'))
-        self.download_date_label.configure(font=('arial', int(10 * scale), 'normal'))
+        scale = AppearanceSettings.get_scale("decimal")
+        self.remove_btn.configure(font=("Segoe UI", 10 * scale, "bold"))
+        self.title_label.configure(font=('Segoe UI', int(11 * scale), 'bold'))
+        self.channel_label.configure(font=('Segoe UI', int(10 * scale), 'bold'))
+        self.download_date_label.configure(font=('Segoe UI', int(10 * scale), 'normal'))
         
-        self.download_btn.configure(font=('arial', int(11 * scale), 'bold'))
+        self.download_btn.configure(font=('Segoe UI', int(11 * scale), 'bold'))
         
     def kill(self):
         if self.remove_callback is not None:

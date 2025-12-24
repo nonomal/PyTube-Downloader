@@ -27,7 +27,6 @@ class SettingPanel(ctk.CTkFrame):
         
         super().__init__(
             master=master,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
         self.general_panel = GeneralPanel(
             master=self,
@@ -66,7 +65,7 @@ class SettingPanel(ctk.CTkFrame):
             navigation_panels=self.panels,
             navigation_button_on_click_callback=self.place_panel,
             navigation_buttons_texts=["general", "appearance", "network", "downloads", "about"],
-            width=200 * AppearanceSettings.settings["scale_r"],
+            width=200 * AppearanceSettings.get_scale("decimal"),
         )
 
         self.vertical_line = ctk.CTkFrame(
@@ -75,6 +74,7 @@ class SettingPanel(ctk.CTkFrame):
         )
         
         self.set_widgets_accent_color()
+        self.set_widgets_colors()
         self.set_widgets_sizes()
         self.place_widgets()
         
@@ -92,14 +92,19 @@ class SettingPanel(ctk.CTkFrame):
                 selected_panel.pack(side="right", fill="both", expand=True)
 
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.navigation_panel.configure(width=int(400 * scale))
 
     def set_widgets_accent_color(self):
-        self.vertical_line.configure(fg_color=AppearanceSettings.settings["root"]["accent_color"]["hover"])
+        self.vertical_line.configure(fg_color=ThemeManager.get_accent_color("normal"))
 
     def update_widgets_accent_color(self):
         self.set_widgets_accent_color()
 
+    def set_widgets_colors(self):
+        """Set colors for the widgets."""
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+
     def update_widgets_colors(self):
         """Update colors for the widgets."""
+        self.set_widgets_colors()

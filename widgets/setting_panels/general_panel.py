@@ -12,18 +12,15 @@ class GeneralPanel(ctk.CTkFrame):
             general_settings_change_callback: Callable = None):
 
         super().__init__(
-            master=master,
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
+            master=master
         )
 
         self.language_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash1_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.language_data = JsonUtility.read_from_file("data\\languages.json")
@@ -31,27 +28,20 @@ class GeneralPanel(ctk.CTkFrame):
         self.languages_combo_box = ctk.CTkComboBox(
             master=self,
             values=self.language_names,
-            dropdown_fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
             command=self.apply_language,
-            width=140 * AppearanceSettings.settings["scale_r"],
-            height=28 * AppearanceSettings.settings["scale_r"],
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
+            width=140 * AppearanceSettings.get_scale("decimal"),
+            height=28 * AppearanceSettings.get_scale("decimal"),
         )
         
         self.shortcut_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.dash2_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
         self.shortcut_frame = ctk.CTkScrollableFrame(
             master=self,
-            scrollbar_fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"],
-            fg_color=AppearanceSettings.settings["root"]["fg_color"]["normal"]
         )
         self.shortcut_keys_data = [
             {"desc": "toggle_settings", "key_strokes": [("Ctrl", ",")]},
@@ -70,10 +60,8 @@ class GeneralPanel(ctk.CTkFrame):
         for skd in self.shortcut_keys_data:
             shortcut_keys_widgets_info_dict = {"label": ctk.CTkLabel(
                 master=self.shortcut_frame,
-                text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
             ), "dash": ctk.CTkLabel(
                 master=self.shortcut_frame,
-                text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
                 text=":"
             ), "key_frame": ctk.CTkFrame(
                 master=self.shortcut_frame,
@@ -83,11 +71,9 @@ class GeneralPanel(ctk.CTkFrame):
                 shortcut_keys_widgets_info_dict["buttons"].append(
                     ctk.CTkButton(
                         master=shortcut_keys_widgets_info_dict["key_frame"],
-                        text_color=AppearanceSettings.settings["settings_panel"]["text_color"],
                         fg_color="transparent",
                         border_width=1,
                         hover=False,
-                        border_color=("#505050", "#808080"),
                         text=" + ".join(key_stroke),
                         corner_radius=8
                     )
@@ -96,13 +82,11 @@ class GeneralPanel(ctk.CTkFrame):
         
         self.alerts_state_label = ctk.CTkLabel(
             master=self,
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.dash3_label = ctk.CTkLabel(
             master=self,
             text=":",
-            text_color=AppearanceSettings.settings["settings_panel"]["text_color"]
         )
 
         self.alerts_state_switch_state = ctk.BooleanVar(value=None)
@@ -115,7 +99,10 @@ class GeneralPanel(ctk.CTkFrame):
             variable=self.alerts_state_switch_state
         )
         
-        self.settings_reset_button = ctk.CTkButton(master=self, text_color=AppearanceSettings.settings["settings_panel"]["text_color"], command=self.reset_settings)    
+        self.settings_reset_button = ctk.CTkButton(
+            master=self, 
+            command=self.reset_settings
+        )    
         
         # callbacks for settings changes
         self.general_settings_change_callback = general_settings_change_callback
@@ -123,9 +110,11 @@ class GeneralPanel(ctk.CTkFrame):
         self.set_widgets_fonts()
         self.set_widgets_texts()
         self.set_widgets_sizes()
+        self.set_widgets_colors()
         self.set_widgets_accent_color()
         self.place_widgets()
         self.set_widgets_values()
+        self.bind_widgets_events()
 
         # Register widget with ThemeManager
         ThemeManager.register_widget(self)
@@ -153,22 +142,14 @@ class GeneralPanel(ctk.CTkFrame):
     def set_widgets_accent_color(self):
         """
         Set accent color for widgets.
-        """
+        """ 
+
         self.languages_combo_box.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            dropdown_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            dropdown_hover_color=ThemeManager.get_accent_color("hover")
         )
-        self.settings_reset_button.configure(
-            fg_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
-        )
-    
+
         self.alerts_state_change_switch.configure(
-            button_color=AppearanceSettings.settings["root"]["accent_color"]["normal"],
-            button_hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            progress_color=AppearanceSettings.settings["root"]["accent_color"]["hover"]
+            progress_color=ThemeManager.get_accent_color("normal"),
         )
 
     def update_widgets_accent_color(self):
@@ -177,14 +158,58 @@ class GeneralPanel(ctk.CTkFrame):
         """
         self.set_widgets_accent_color()
 
+    def set_widgets_colors(self):
+        """
+        Set colors for the widgets.
+        """
+        self.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+
+        self.language_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash1_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.languages_combo_box.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            border_color=ThemeManager.get_color_based_on_theme("border"),
+            dropdown_fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            dropdown_text_color=ThemeManager.get_color_based_on_theme("text_muted"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )
+        
+        self.shortcut_frame.configure(fg_color=ThemeManager.get_color_based_on_theme("background"))
+        self.shortcut_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.dash2_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+
+        for key, value in enumerate(self.shortcut_keys_widgets_info):
+            value["label"].configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+            value["dash"].configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+            for button in value["buttons"]:
+                button.configure(
+                    fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                    border_color=ThemeManager.get_color_based_on_theme("border"),
+                    text_color=ThemeManager.get_color_based_on_theme("text_normal")
+                )
+        
+        self.settings_reset_button.configure(
+            fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+        )
+
+        self.alerts_state_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_normal"))
+        self.alerts_state_change_switch.configure(
+            button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            button_hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary")
+        )        
+
     def update_widgets_colors(self):
         """Update colors for the widgets."""
+        self.set_widgets_colors()
 
     def place_widgets(self):
         """
         Place widgets on the frame.
         """
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         pady = 16 * scale
         
         self.language_label.grid(row=0, column=0, padx=(100, 0), pady=(50, 0), sticky="w")
@@ -212,7 +237,7 @@ class GeneralPanel(ctk.CTkFrame):
         self.settings_reset_button.grid(row=3, column=2, padx=(100, 0), pady=(pady, 0), sticky="s")
         
     def set_widgets_sizes(self):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.languages_combo_box.configure(width=140 * scale, height=28 * scale)
         self.shortcut_frame.configure(width=450 * scale, height=252 * scale)
         self.shortcut_frame._scrollbar.grid_forget()
@@ -245,7 +270,7 @@ class GeneralPanel(ctk.CTkFrame):
 
     def set_widgets_fonts(self):
         # Segoe UI, Open Sans
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         title_font = ("Segoe UI", 13 * scale, "bold")
         self.language_label.configure(font=title_font)
         self.dash1_label.configure(font=title_font)
@@ -279,3 +304,45 @@ class GeneralPanel(ctk.CTkFrame):
         if GeneralSettings.settings["alerts"]:
             self.alerts_state_change_switch.select()
             self.alerts_state_switch_state.set(True)
+
+    def bind_widgets_events(self):
+        # ---------------------------------------------------------- 
+
+        def on_mouse_enter_languages_combo_box(event_):
+            self.languages_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary_hover"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_languages_combo_box(event_):
+            self.languages_combo_box.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("primary"),
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.languages_combo_box.bind("<Enter>", on_mouse_enter_languages_combo_box)
+        self.languages_combo_box.bind("<Leave>", on_mouse_leave_languages_combo_box)
+
+        # ---------------------------------------------------------- 
+
+        def on_mouse_enter_reset_button(event_):
+            self.settings_reset_button.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning_hover"),
+            )
+        def on_mouse_leave_reset_button(event_):
+            self.settings_reset_button.configure(
+                fg_color=ThemeManager.get_color_based_on_theme("background_warning"),
+            )
+        self.settings_reset_button.bind("<Enter>", on_mouse_enter_reset_button)
+        self.settings_reset_button.bind("<Leave>", on_mouse_leave_reset_button)
+
+        # ----------------------------------------------------------
+
+        def on_mouse_enter_alerts_state_change_switch(event_):
+            self.alerts_state_change_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+            )
+        def on_mouse_leave_alerts_state_change_switch(event_):
+            self.alerts_state_change_switch.configure(
+                button_color=ThemeManager.get_color_based_on_theme("secondary"),
+            )
+        self.alerts_state_change_switch.bind("<Enter>", on_mouse_enter_alerts_state_change_switch)
+        self.alerts_state_change_switch.bind("<Leave>", on_mouse_leave_alerts_state_change_switch)

@@ -121,7 +121,7 @@ class HistoryPlaylist(HistoryObject):
     def place_widgets(self):
         super().place_widgets()
         
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         y = (self.width) / 16 * 9 + 6
     
         self.videos_count_label.place(x=(self.width - 2), y=y, anchor="se")
@@ -129,19 +129,23 @@ class HistoryPlaylist(HistoryObject):
     def set_widgets_sizes(self):
         super().set_widgets_sizes()
         
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
         self.videos_count_label.configure(width=1, height=15 * scale)
     
     def set_widgets_fonts(self):
         super().set_widgets_fonts()
         
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         
-        self.videos_count_label.configure(font=('arial', int(11 * scale), 'bold'))
+        self.videos_count_label.configure(font=('Segoe UI', int(11 * scale), 'bold'))
 
     def set_widgets_texts(self):
         self.videos_count_label.configure(text=f"☰♪ {self.videos_count} {LanguageManager.data["videos"]}")
 
     def update_widgets_text(self):
         self.set_widgets_texts()
+
+    def set_widgets_colors(self) -> None:
+        super().set_widgets_colors()
+        self.videos_count_label.configure(text_color=ThemeManager.get_color_based_on_theme("text_muted"))

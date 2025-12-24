@@ -19,11 +19,11 @@ class ContextMenu(ctk.CTkFrame):
             master=None,
             width: int = 70,
             height: int = 100,
-            font: tuple[str, int, str] = ("arial", 10, "bold"),
+            font: tuple[str, int, str] = ("Segoe UI", 10, "bold"),
             options_texts: List[str] = None,
             options_commands: List[Callable] = None):
 
-        super().__init__(master=master, width=width, height=height, border_width=1, corner_radius=0)
+        super().__init__(master=master, corner_radius=0)
 
         self.width = width
         self.height = height
@@ -64,25 +64,23 @@ class ContextMenu(ctk.CTkFrame):
             self.option_buttons.append(button)
 
     def set_widgets_accent_color(self):
-        self.configure(border_color=AppearanceSettings.settings["root"]["accent_color"]["normal"])
-        for option_button in self.option_buttons:
-            option_button.configure(
-                hover_color=AppearanceSettings.settings["root"]["accent_color"]["hover"],
-            )
+        self.configure(border_color=ThemeManager.get_accent_color("normal"))
 
     def update_widgets_accent_color(self):
         self.set_widgets_accent_color()
 
     def set_widgets_colors(self):
-        self.configure(fg_color=AppearanceSettings.settings["root"]["fg_color"]["hover"])
+        super().configure(fg_color=ThemeManager.get_color_based_on_theme("secondary"))
         for option_button in self.option_buttons:
             option_button.configure(
-                fg_color=AppearanceSettings.settings["root"]["fg_color"]["hover"],
-                text_color=AppearanceSettings.settings["context_menu"]["text_color"]
+                text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+                hover_color=ThemeManager.get_color_based_on_theme("secondary_hover"),
+                fg_color=ThemeManager.get_color_based_on_theme("secondary"),
             )
 
     def update_widgets_colors(self):
         """Update colors for the widgets."""
+        self.set_widgets_colors()
 
     def set_widgets_fonts(self):
         for option_button in self.option_buttons:
@@ -98,6 +96,8 @@ class ContextMenu(ctk.CTkFrame):
         self.set_widgets_texts()
 
     def set_widgets_sizes(self):
+        scale = AppearanceSettings.get_scale("decimal")
+        super().configure(width=self.width, height=self.height, border_width=1)
         button_height = int((self.height - 2) / len(self.options_texts))
         for option_button in self.option_buttons:
             option_button.configure(

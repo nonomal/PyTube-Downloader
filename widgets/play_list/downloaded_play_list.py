@@ -51,7 +51,7 @@ class DownloadedPlayList(PlayList):
             video = DownloadedVideo(
                 root=self.root,
                 master=self.playlist_videos_frame,
-                height=70 * AppearanceSettings.settings["scale_r"],
+                height=70 * AppearanceSettings.get_scale("decimal"),
                 width=self.playlist_videos_frame.winfo_width() - 20,
                 # video info
                 thumbnails=downloading_video.thumbnails,
@@ -97,7 +97,7 @@ class DownloadedPlayList(PlayList):
                 )
 
     def configure_widget_sizes(self, _event):
-        scale = AppearanceSettings.settings["scale_r"]
+        scale = AppearanceSettings.get_scale("decimal")
         self.info_frame.configure(
             width=self.master_frame.winfo_width() - (50 * scale + 15 * scale) - (60 * scale)
         )

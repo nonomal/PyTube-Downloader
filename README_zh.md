@@ -1,165 +1,173 @@
-[![English](https://img.shields.io/badge/Language-English-blue)](README.md)
+# ⚡PyTube Downloader 
 
-# PyTube Downloader
-
-&nbsp; &nbsp;[![Download PyTube Downloader](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
-
-&nbsp; &nbsp;[![Download PyTube Downloader](https://img.shields.io/sourceforge/dm/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download) [![Download PyTube Downloader](https://img.shields.io/sourceforge/dw/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download) [![Download PyTube Downloader](https://img.shields.io/sourceforge/dt/pytube-downloader.svg)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
-
-&nbsp; &nbsp;![PyPI - License](https://img.shields.io/badge/license-MIT-blue)
-![LOC](https://tokei.rs/b1/github/Thisal-D/PyTube-Downloader?category=lines)
-
-[下载适用于 Windows 的 .exe](https://sourceforge.net/p/pytube-downloader)
+[![Language: eNGLISH](https://img.shields.io/badge/Language-English-red)](README.md)
+[![Download (Latest)](https://img.shields.io/sourceforge/dm/pytube-downloader.svg?label=Downloads)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![UI](https://img.shields.io/badge/UI-tkinter%2Bcustomtkinter-green)
 
 ---
 
-**PyTube Downloader 是一个简单、用户友好的应用程序，帮助您轻松下载 YouTube 视频或整个播放列表。您可以选择多种视频和音频格式，包括从 144p 到 8K 的各种分辨率。它还允许您一次下载多个视频，节省时间。**
+### 🚀 简单 · 快速 · 强大的 YouTube 下载器
+
+**PyTube 下载器** 是一个现代、用户友好的应用程序，可让从 YouTube 下载视频和播放列表变得轻而易举。
+支持多种格式、质量（144p–8K）以及同时下载，让你 **完全掌控你的 YouTube 媒体体验**。
+
+   [![下载 PyTube 下载器](https://a.fsdn.com/con/app/sf-download-button)](https://sourceforge.net/projects/pytube-downloader/files/latest/download)
 
 ---
 
-## 特点
+## 🖥️ 界面预览
 
-- **播放列表下载**： 仅通过播放列表 URL 下载整个播放列表。
-- **格式选择**： 从各种视频和音频格式中选择下载，从 144p 到 8K。
-- **下载进度跟踪**： 在应用程序内跟踪下载进度。
-- **同时下载**： 同时下载多个 YouTube 视频，节省时间并提高效率。用户可以完全控制同时下载的数量，允许个性化的下载体验。
-- **默认设置的自动下载**： 用户可以设置默认的下载设置，如首选视频质量、音频格式、下载位置等。添加 YouTube URL 后，视频/播放列表将- **加载并根据这些默认设置自动下载。
-  - 在播放列表自动下载模式下，如果有任何视频无法加载，将被忽略它们继续下载剩余的视频。
-- **动态文件夹组织**： 根据视频质量、文件类型（音频或视频）和播放列表名称等因素，自动将下载的文件组织到单独的目录中，确保有效和结构化的存储。
-- **多语言支持**： 可以使用您喜欢的语言享受该应用程序，支持多种语言。
-
-  - 当前支持语言:
-    | 语言         | 贡献者       |
-    | --------------| ------------ |
-    | `English` (英文)         | -            |
-    | `中文` | [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
-    | `සිංහල` (僧伽罗语) | [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) |
-    | `தமிழ்` (泰米尔语)  | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma) |
-
-  - **帮助我们 [``改进当前语言``](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#improve-current-language-issues) 和 [``添加新语言``](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#adding-a-new-language) 到此应用程序。**
-- **快捷键**： 使用常见任务的快捷键来控制应用程序。
+![Preview](./readme%20assets/zh-0.png)
 
 ---
 
-## 快速入门指南
+## ✨ 功能亮点
 
-1. 将仓库克隆到本地计算机。
-    - 使用以下命令克隆仓库：
-      
-      ```bash
-      git clone https://github.com/Thisal-D/PyTube-Downloader.git
-      ```
-2. 下载 FFmpeg
-   - 访问 [FFmpeg 网站](https://ffmpeg.org/download.html) 并下载适合您操作系统的版本。
-   - 解压下载的文件并找到 ffmpeg.exe 文件。 (`ffmpeg\bin\ffmpeg.exe`)
-   - 将 ffmpeg.exe 复制到应用程序目录中的 ffmpeg 文件夹。 (`Pytube-Downloader\ffmpeg\`)
-3. 安装依赖：:
-    - 如果应用程序需要依赖，运行以下脚本安装它们：
-     
-      ```bash
-      python dependencies_installer.py
-      ```
-4. 运行应用程序：
-    - 通过运行以下命令启动应用程序：
-      
-      ```bash
-      python main.py
-      ```
-5. 粘贴 YouTube URL：
-    - 将您要下载的 YouTube 视频或播放列表的 URL 粘贴到指定的输入框中。
-6. 选择下载模式：
-    - 选择您是要下载单个视频还是整个播放列表。
-7. 选择格式：
-    - 从可用选项中选择所需的格式（例如，MP4、MP3）。
-8. 启动下载：
-    - 点击下载按钮开始下载过程。
-9. 监控进度：
-    - 在应用程序界面中查看下载进度。
-10. 享受您的视频：
-    - 下载完成后，在输出目录中找到文件并享受您的 YouTube 视频或音频！
+* 🎞️ **播放列表下载** — 从一个链接下载整个播放列表
+
+* 🎚️ **格式 & 质量选择** — 多种格式（MP4、MP3 等）和质量（144p–8K）
+
+* 📊 **进度跟踪** — 在应用内实时查看下载进度
+
+* ⚡ **同时下载** — 支持多个任务同时下载，提高效率
+
+* ⚙️ **预设自动下载** — 设定你喜欢的质量、格式和保存位置，一键自动处理
+
+* 🗂️ **动态文件夹整理** — 可以按播放列表、质量或类型自动分类保存
+
+* 🌐 **多语言支持**：
+
+  | 语言           | 贡献者                                                                                                 |
+  | ------------ | --------------------------------------------------------------------------------------------------- |
+  | English      | -                                                                                                   |
+  | 中文 (Chinese) | [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) |
+  | සිංහල (僧加罗语) | [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21)     |
+  | தமிழ் (泰米尔语) | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma)   |
+
+  💡 **帮助我们改进现有翻译** 或 **添加新语言**！
+  查看：[改善现有语言贡献指南](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues)
+  或：[添加新语言指南](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language)
+
+* ⌨️ **键盘快捷键** — 快速控制应用
 
 ---
 
-## 使用的技术
+## ⚙️ 技术栈
 
-- **编程语言：** 
-  - Python
-- **Python 库：** 
-  - tkinter
-  - customtkinter
-  - pytube
-  - pytubefix
-  - pillow
-  - pyautogui
-  - pystray
-  - pyperclip
-- **依赖：**
-  - FFMPEG
+| 类别       | 技术                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| **语言**   | Python                                                                                           |
+| **库**    | `tkinter`, `customtkinter`, `pytubefix`, `pillow`, `pyautogui`, `pystray`, `pyperclip`. `hPyT`, `win11toast`, `ctkchart` |
+| **外部工具** | `FFmpeg`（用于视频/音频处理）                                                                              |
 
 ---
 
-## 项目结构
+## 🧭 快速入门指南
 
-查看 [**项目结构**](PROJECT_STRUCTURE.md) 指南，了解文件夹组织和代码布局。
+### 1️⃣ 克隆仓库
+
+```bash
+git clone https://github.com/Thisal-D/PyTube-Downloader.git
+cd PyTube-Downloader
+```
+
+### 2️⃣ 安装 FFmpeg
+
+* 从官网下载安装： [https://ffmpeg.org/download.html](https://ffmpeg.org/download.html)
+* 解压并将 `ffmpeg.exe` 复制到：
+
+  ```
+  PyTube-Downloader/ffmpeg/
+  ```
+
+### 3️⃣ 安装依赖
+
+```bash
+python dependencies_installer.py
+python dependencies_updater.py
+```
+
+### 4️⃣ 运行程序
+
+```bash
+python main.py
+```
+
+### 5️⃣ 下载视频
+
+1. 粘贴 YouTube 视频或播放列表链接
+2. 选择 **单个视频** 或 **播放列表模式**
+3. 选择你想要的 **格式和质量**
+4. 点击 **下载** 并实时查看进度
+5. 在输出文件夹中找到下载完成的文件
 
 ---
 
-## 暗黑主题预览
+## 📁 项目结构
 
-![0](./readme%20assets/zh-0.png)
-![1](./readme%20assets/zh-1.png)
-![2](./readme%20assets/zh-2.png)
-![3](./readme%20assets/zh-3.png)
-![4](./readme%20assets/zh-4.png)
-![5](./readme%20assets/zh-5.png)
-![6](./readme%20assets/zh-6.png)
-![7](./readme%20assets/zh-7.png)
-![8](./readme%20assets/zh-8.png)
-![9](./readme%20assets/zh-9.png)
-
+查看 [项目结构指南](PROJECT_STRUCTURE.md) 获取详细目录和代码说明。
 
 ---
 
-## Star 历史
+## 🌙 深色主题预览
+
+| 截图                               |
+| -------------------------------- |
+| ![1](./readme%20assets/zh-0.png) |
+| ![2](./readme%20assets/zh-1.png) |
+| ![3](./readme%20assets/zh-2.png) |
+| ![4](./readme%20assets/zh-3.png) |
+| ![5](./readme%20assets/zh-4.png) |
+| ![6](./readme%20assets/zh-5.png) |
+| ![7](./readme%20assets/zh-6.png) |
+| ![8](./readme%20assets/zh-7.png) |
+| ![9](./readme%20assets/zh-8.png) |
+
+---
+
+## ⭐ Star 增长历史
 
 <picture> 
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=dark"> 
-    <img src="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=light" > 
-</picture> 
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=dark">
+  <img src="https://api.star-history.com/svg?repos=Thisal-D/PyTube-Downloader&type=Date&theme=light">
+</picture>
 
 ---
 
-## 使用方法
+## 🤝 贡献
 
-1. 将仓库克隆到您的本地机器。
-2. 安装必要的依赖项（如有，运行 **dependencies_installer.py**）。
-3. 运行应用程序（``main.py``）。
-4. 将 YouTube 视频/播放列表 URL 粘贴到指定字段中。
-5. 选择下载模式: 视频/播放列表。
-6. 选择所需的格式。
-7. 点击下载按钮以启动下载过程。
-8. 在应用
-
-## 贡献
-
-欢迎对此项目进行贡献！请随意分叉存储库，进行改进，并提交拉取请求。
+欢迎你的贡献！
+Fork 这个仓库、改进代码，然后提交 Pull Request 😊
 
 ---
 
-## 许可证
+## 📜 许可协议
 
-本项目根据 MIT 许可证授权 - 有关详细信息，请参阅 [LICENSE](LICENSE) 文件。
-
----
-
-## 免责声明
-
-本应用仅供个人使用。请尊重 YouTube 的服务条款和内容创建者的权利。
+本项目采用 **MIT 许可证**。
+更多详情请查看 [LICENSE](LICENSE) 文件。
 
 ---
 
-## 贡献者
+## ⚠️ 免责声明
 
-- [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu) [youyu](https://github.com/childeyouyu)
-- [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21) [Navindu Pahasara](https://github.com/Navindu21)
-- [<img src="https://github.com/sooryasuraweera.png?size=25" width="25">](https://github.com/sooryasuraweera) [Soorya Suraweera](https://github.com/sooryasuraweera)
+此应用仅供 **个人使用**。
+请在下载视频时尊重 **YouTube 服务条款** 和作者的版权。
+
+---
+
+## 👥 贡献者
+
+| 贡献者                                                                                                         | 主页                                                     |
+| ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| [<img src="https://github.com/childeyouyu.png?size=25" width="25">](https://github.com/childeyouyu)         | [youyu](https://github.com/childeyouyu)                |
+| [<img src="https://github.com/Navindu21.png?size=25" width="25">](https://github.com/Navindu21)             | [Navindu Pahasara](https://github.com/Navindu21)       |
+| [<img src="https://github.com/sooryasuraweera.png?size=25" width="25">](https://github.com/sooryasuraweera) | [Soorya Suraweera](https://github.com/sooryasuraweera) |
+| [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma)           | [Fathima Asma](https://github.com/fathi-asma)          |
+
+---
+
+<p align="center">
+<b>用 ❤️ 建立</b>
+</p>

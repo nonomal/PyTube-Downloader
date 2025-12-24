@@ -2,7 +2,9 @@ import customtkinter as ctk
 import time
 from typing import List, Tuple, Any, Literal
 import threading
-
+from settings import AppearanceSettings
+from utils import JsonUtility
+from hPyT import title_bar_color, title_bar_text_color
 
 class ThemeManager:
     # List to keep track of all registered child objects
@@ -11,13 +13,29 @@ class ThemeManager:
     # Variable to track current theme mode
     current_theme_mode: Literal["Dark", "Light", None] = None
 
+    theme_colors: dict = None
+    
     @staticmethod
-    def get_color_based_on_theme_mode(color_pair: Tuple[str, str]) -> str:
+    def update_theme() -> None:
+        ThemeManager.initialize()
+        ThemeManager.update_widgets_colors()
+        
+    @staticmethod
+    def get_color_based_on_theme(color: str) -> str:
         """Returns appropriate color based on the current theme mode."""
-        if ThemeManager.current_theme_mode == "Dark":
-            return color_pair[1]  # For dark theme
+        return ThemeManager.theme_colors[color]  # For dark them
+
+    @staticmethod
+    def get_accent_color(state: Literal["normal", "hover"]) -> str:
+        """Returns the current accent color."""
+        if state == "normal":
+            color = AppearanceSettings.settings["accent"]["selected"]["color"][0]
+        elif state == "hover":
+            color = AppearanceSettings.settings["accent"]["selected"]["color"][1]
         else:
-            return color_pair[0]  # For light theme
+            print("theme_manager.py L31: Invalid state for accent color")
+            color = AppearanceSettings.settings["accent"]["selected"][0]
+        return color
 
     @staticmethod
     def track_theme_mode_changes() -> None:
@@ -31,6 +49,11 @@ class ThemeManager:
                 ThemeManager.update_widgets_colors()
             # Wait 1 second before checking the theme mode again
             time.sleep(1)
+
+    @staticmethod
+    def set_title_bar_style(window: ctk.CTk) -> None:
+        title_bar_color.set(window, ThemeManager.get_color_based_on_theme("background")) # sets the titlebar color to magenta
+        title_bar_text_color.set(window, ThemeManager.get_color_based_on_theme("text_normal")) # sets the titlebar color to magenta
 
     @staticmethod
     def update_accent_color() -> None:
@@ -66,6 +89,10 @@ class ThemeManager:
         """
         Starts the theme tracking system in a separate thread.
         """
+        lang_file = f"data\\themes\\{AppearanceSettings.settings["theme"]["name"]}.json"
+        ThemeManager.theme_colors = JsonUtility.read_from_file(lang_file)
+
+        """"""
         theme_tracking_thread = threading.Thread(target=ThemeManager.track_theme_mode_changes)
         theme_tracking_thread.daemon = True  # Daemonize the thread, so it exits when the main program exits
         theme_tracking_thread.start()
