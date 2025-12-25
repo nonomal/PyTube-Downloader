@@ -11,7 +11,7 @@ class AppearanceSettings:
     default_settings_directory = f"data"
     default_settings_file = default_settings_directory + "\\appearance.json"
     user_settings_directory = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
-    user_settings_file = user_settings_directory + "\\appearance.json"
+    user_settings_file = user_settings_directory + "\\appearance_v6.0.0.json"
     
     
     SETTINGS = {
