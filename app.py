@@ -30,7 +30,8 @@ from services import (
     HistoryManager,
     LoadingIndicateManager,
     VideoCountTracker,
-    DownloadSpeedTracker
+    DownloadSpeedTracker,
+    InformationManager
 )
 from settings import (
     AppearanceSettings,
@@ -168,19 +169,56 @@ class App(ctk.CTk):
         # Create loading screen widgets
         self.initializing_frame = ctk.CTkFrame(
             master=self,
-            fg_color=ThemeManager.get_color_based_on_theme("background"))
-        self.initializing_logo_label = ctk.CTkLabel(
-            master=self.initializing_frame, 
-            text="⚡",
-            font=("Segoe UI", 40 * scale, "normal"),
-            text_color=ThemeManager.get_accent_color("normal")
+            fg_color=ThemeManager.get_color_based_on_theme("background")
         )
+        
+        self.logo_name_version_frame = ctk.CTkFrame(
+            master=self.initializing_frame,
+            fg_color=ThemeManager.get_color_based_on_theme("background")
+        )
+        
+        self.logo_label = ctk.CTkLabel(
+            master=self.logo_name_version_frame,
+            text=InformationManager.info["logo"],
+            text_color=ThemeManager.get_accent_color("normal"),
+            font=("Segoe UI", 30 * scale, "bold")
+        )
+
+        self.name_label = ctk.CTkLabel(
+            master=self.logo_name_version_frame,
+            text=InformationManager.info["name"],
+            text_color=ThemeManager.get_accent_color("normal"),
+            font=("Segoe UI", 24 * scale, "bold")
+        )
+
+        self.version_label = ctk.CTkButton(
+            master=self.logo_name_version_frame,
+            hover=False,
+            text=f"v{InformationManager.info["version"]}",
+            font=("Segoe UI", 10 * scale, "bold"),
+            text_color=ThemeManager.get_color_based_on_theme("text_normal"),
+            fg_color=ThemeManager.get_color_based_on_theme("primary"),
+            border_color=ThemeManager.get_color_based_on_theme("border")
+        )
+        self.version_label.configure(
+            width=1 * scale, 
+            height=1 * scale
+        )
+
+        self.logo_label.grid(row=0, column=0, sticky="e")
+        self.name_label.grid(row=0, column=1, sticky="e")
+        self.version_label.grid(row=0, column=2, sticky="sw", padx=(8 * scale, 0))
+
         self.initializing_state_label = ctk.CTkLabel(
             master=self.initializing_frame,
             text="State : Initializing",
             font=("Segoe UI", 15 * scale, "bold"),
             text_color=ThemeManager.get_color_based_on_theme("text_muted")
         )
+
+        self.logo_name_version_frame.grid(row=1, column=1, sticky="")  # Center the label
+        self.initializing_state_label.grid(row=2, column=1, sticky="")  # Center the button below the label
+
         self.initializing_frame.place(relwidth=1, relheight=1)
         
         self.set_initializing_status("initializing")
@@ -192,9 +230,6 @@ class App(ctk.CTk):
         self.initializing_frame.grid_columnconfigure(0, weight=1)  # Left empty column
         self.initializing_frame.grid_columnconfigure(1, weight=1)  # Center column
         self.initializing_frame.grid_columnconfigure(2, weight=1)  # Right empty column
-
-        self.initializing_logo_label.grid(row=1, column=1, sticky="")  # Center the label
-        self.initializing_state_label.grid(row=2, column=1, sticky="")  # Center the button below the label
         
         loading_screen_width = int(400 * scale)
         loading_screen_height = int(150 * scale)
