@@ -13,7 +13,6 @@ class AppearanceSettings:
     user_settings_directory = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
     user_settings_file = user_settings_directory + "\\appearance.json"
     
-    themes = ("dark", "light", "system")
     
     SETTINGS = {
         "accent": {
