@@ -1,72 +1,101 @@
 <div id="improve-current-language-issues">
 
-## Improve Current Language Issues
+# 🌍 Language Contribution Guide
 
-To address current language issues, follow these steps:
-
-1. **Locate the Corresponding File:**
-   - Navigate to the `data` directory and open the `languages.json` file. Find the language key corresponding to the issue and locate the respective language file in the `data\languages` directory.
-
-2. **Edit the Language File:**
-   - Update the translation text in the identified language file with your suggested fixes.
-
-3. **Test the Language**:
-    - Verify that the language texts fit within the UI widgets. If any text is too lengthy, consider using shorter forms or displaying them across multiple lines to ensure proper display and readability.
-     
-4. **You're all set, just create the pull request.**
-
-<br>
-
-</div>
+Improve and expand the multilingual experience of **PyTube Downloader** by fixing translations or adding new languages.
+Your contributions make the app more accessible and user-friendly for everyone!
 
 ---
 
-<br>
+## 🧹 Improve Existing Translations
+
+To correct or enhance current language files:
+
+1. **Locate the Language File**
+
+   * Go to the [`data`](/data) directory.
+   * Open [`languages.json`](/data/languages.json) to find the relevant language key and its file path in [`data/languages/`](/data/languages).
+
+2. **Edit the Translation File**
+
+   * Open the corresponding JSON file (e.g., [`en.json`](/data/languages/en.json), `fr.json`).
+   * Update the text with your improved translation.
+
+3. **Test the Changes**
+
+   * Launch the application and verify that the updated text displays correctly.
+   * Ensure the translated text fits neatly within UI elements.
+
+     > 💡 If it’s too long, use shorter words or line breaks for readability.
+
+4. **Submit a Pull Request**
+
+   * Once verified, commit your changes and create a PR titled:
+
+     ```
+     fix(language): improved [Language] translations
+     ```
+</div>
+
+---
 
 <div id="adding-a-new-language">
 
-## Adding a New Language
+## 🌐 Add a New Language
 
-To add a new language to the application, follow these steps:
+To contribute a brand-new language:
 
-1. **Update `languages.json`:**
-   - Open the `languages.json` file located in the `data\` directory of the project (`data\languages.json`).
-   - Add a new entry to the JSON object with the language name as the key and a unique language code as the value.
+1. **Update `languages.json`**
 
-   Example:
-   ```json
-   {
-     "English": "en", # English
-     "中文": "zh" # Chinese
-     "Española": "es"  # New entry for Spanish
-   }
+   * Edit the [`languages.json`](/data/languages.json) file located in the [`data`](/data) directory.
+   * Add your language name and a short code to the JSON object.
 
-2.  **Create the Language File**:
-    - Create a new JSON file in the data\languages directory with the name corresponding to the new language code.
-   
-        - For example, for Spanish, create es.json in the data\languages directory.
-         
-    - Add the required translations ``(check current languages files)`` in this new JSON file.
-    
-    Example (`es.json`):
+     Example:
 
-    ```json
-    {
-     "video": "Video",
-     "playlist": "Lista",
-     "add +": "Añadir +",
-     "added": "Añadido"
-    }
+     ```json
+     {
+       "English": "en",
+       "中文": "zh",
+       "Español": "es"
+     }
+     ```
 
-3. **Test the Language**:
-    - Verify that the language texts fit within the UI widgets. If any text is too lengthy, consider using shorter forms or displaying them across multiple lines to ensure proper display and readability.
+2. **Create the Language File**
 
-4. **You're all set, just create the pull request**
+   * In the [`data/languages`](/data/languages) directory, create a new file using your language code (e.g., `es.json`).
+   * Add translations for all keys based on existing files.
 
-<br>
+     Example (`es.json`):
+
+     ```json
+     {
+       "video": "Video",
+       "playlist": "Lista",
+       "add +": "Añadir +",
+       "added": "Añadido"
+     }
+     ```
+
+3. **Test the Language**
+
+   * Run the application and select your new language.
+   * Check spacing and readability in all UI components.
+
+4. **Submit a Pull Request**
+
+   * Once verified, commit your new file and submit a PR titled:
+
+     ```
+     feat(language): added [Language] translations
+     ```
 
 </div>
 
 ---
 
-**Thank you very much for your assistance with the languages in the app! Your help is greatly appreciated and will have a significant impact on our users. Excellent work!**
+## 💬 Final Words
+
+Thank you for improving our global user experience!
+Your language contributions help users around the world enjoy a smoother and more inclusive application.
+
+> ❤️ Excellent work — your effort truly makes a difference!

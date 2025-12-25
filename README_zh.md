@@ -47,8 +47,8 @@
   | தமிழ் (泰米尔语) | [<img src="https://github.com/fathi-asma.png?size=25" width="25">](https://github.com/fathi-asma)   |
 
   💡 **帮助我们改进现有翻译** 或 **添加新语言**！
-  查看：[改善现有语言贡献指南](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues)
-  或：[添加新语言指南](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language)
+  查看：[改善现有语言贡献指南](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#improve-current-language-issues)
+  或：[添加新语言指南](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#adding-a-new-language)
 
 * ⌨️ **键盘快捷键** — 快速控制应用
 
@@ -136,10 +136,33 @@ python main.py
 
 ---
 
-## 🤝 贡献
+Here’s the **Simplified Chinese** translation of your “Contribution” section:
 
-欢迎你的贡献！
-Fork 这个仓库、改进代码，然后提交 Pull Request 😊
+---
+
+## 🤝 贡献指南
+
+我们**欢迎各种形式的贡献**——不仅仅是代码！
+无论你是在改进界面、翻译语言、优化主题，还是完善文档——**你的付出都能让 PyTube Downloader 对每位用户更加出色。**
+
+### 💡 你可以贡献的方式
+
+* 🧩 **代码改进：**
+  修复 bug、优化性能，或提出新功能建议。
+* 🌍 **语言贡献：**
+  帮助我们[**改进现有翻译**](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#improve-current-language-issues)
+  或[**添加新语言支持**](LANGUAGE_CONTRIBUTION_GUIDE_zh.md/#adding-a-new-language)。
+* 🎨 **主题贡献：**
+  帮助我们[**优化现有主题**](THEME_CONTRIBUTION_GUIDE_zh.md/#improve-current-themes)
+  或[**设计全新主题**](THEME_CONTRIBUTION_GUIDE_zh.md/#adding-a-new-theme)。
+* 🧠 **想法与反馈：**
+  在 [GitHub Issues](https://github.com/Thisal-D/PyTube-Downloader/issues) 分享功能建议或报告问题。
+* 🧾 **文档与指南：**
+  改进文档的可读性、结构或示例内容。
+
+---
+
+If you want, I can now **combine all your previous translations** (Language Guide, Theme Guide, Contribution) into one **complete Simplified Chinese README section** for your project. This would make it ready to paste directly. Do you want me to do that?
 
 ---
 

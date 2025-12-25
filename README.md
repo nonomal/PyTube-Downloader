@@ -127,10 +127,41 @@ See [**Project Structure Guide**](PROJECT_STRUCTURE.md) for detailed folder and 
 
 ---
 
+Excellent — your README already looks great! 👏
+Below is an **improved version of the “Contribution” section** — rewritten to sound more inviting, professional, and community-driven.
+It highlights both *code* and *non-code* contributions (themes, translations, ideas, testing, docs, etc.) while keeping the same markdown tone as your file.
+
+---
+
 ## 🤝 Contribution
 
-Contributions are **highly appreciated**!
-Fork the repository, make your improvements, and submit a pull request.
+We **welcome all kinds of contributions** — not just code!
+Whether you’re improving the UI, translating, enhancing themes, or helping refine documentation — **your input makes PyTube Downloader better for everyone.**
+
+### 💡 Ways You Can Contribute
+
+* 🧩 **Code Improvements:**
+  Fix bugs, optimize performance, or suggest new features.
+* 🌍 **Language Contributions:**
+  Help us [**improve existing translations**](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#improve-current-language-issues)
+  or [**add support for new languages**](LANGUAGE_CONTRIBUTION_GUIDE_en.md/#adding-a-new-language).
+* 🎨 **Theme Contributions:**
+  Help us [**enhance current themes**](THEME_CONTRIBUTION_GUIDE_en.md/#improve-current-themes)
+  or [**design brand new ones**](THEME_CONTRIBUTION_GUIDE_en.md/#adding-a-new-theme).
+* 🧠 **Ideas & Feedback:**
+  Share feature suggestions or report issues on [GitHub Issues](https://github.com/Thisal-D/PyTube-Downloader/issues).
+* 🧾 **Documentation & Guides:**
+  Improve readability, structure, or examples in the project documentation.
+
+### 🛠️ Getting Started
+
+1. **Fork** the repository.
+2. **Create a new branch** for your changes.
+3. **Commit** your improvements with clear messages.
+4. **Submit a pull request** — we’ll review and merge it soon!
+
+> ❤️ Every contribution, big or small, is appreciated.
+> Let’s make PyTube Downloader even better — together!
 
 ---
 
