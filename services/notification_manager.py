@@ -22,7 +22,7 @@ class NotificationManager():
         while True:
             if len(NotificationManager.queued_notifications) == 0:
                 NotificationManager.running = False
-                break;
+                break
             # print(NotificationManager.queued_notifications[0])
             NotificationManager.show_advanced_notification(**NotificationManager.queued_notifications.pop(0))
             time.sleep(NotificationManager.notification_duration)

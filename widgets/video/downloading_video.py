@@ -556,7 +556,10 @@ class DownloadingVideo(Video):
             self.video_download_status_callback(self, self.download_state)
         if self.mode == "video":
             self.video_download_complete_callback(self)
-            self.show_notification()
+            try:
+                self.show_notification()
+            except Exception as error:
+                print("downloading_video.py L-562 : ", error)
             self.kill()
     
     def rename_to_original_name(self):
@@ -567,12 +570,12 @@ class DownloadingVideo(Video):
         try:
             os.remove(self.audio_only_file_name)
         except Exception as error:
-            print("downloading_video.py L-563 : ", error)
+            print("downloading_video.py L-573 : ", error)
             
         try:
             os.remove(self.video_only_file_name)
         except Exception as error:
-            print("downloading_video.py L-568 : ", error)
+            print("downloading_video.py L-578 : ", error)
     
     def set_converting_completed(self):
         self.set_convert_progress(100)

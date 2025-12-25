@@ -2020,6 +2020,8 @@ class App(ctk.CTk):
         if updated == "theme":
             ThemeManager.update_theme()
             ThemeManager.set_title_bar_style(self)
+        if updated == "opacity":
+            self.attributes("-alpha", AppearanceSettings.get_opacity("decimal"))
         # print(AppearanceSettings.get_opacity("percentage"))
         AppearanceSettings.save_settings()
 
