@@ -282,6 +282,7 @@ class AppearancePanel(ctk.CTkFrame):
         self.set_value_to_entry(self.opacity_value_entry, f"{opacity_value} %")
         AppearanceSettings.settings["window"]["opacity"]["percentage"] = opacity_value
         AppearanceSettings.settings["window"]["opacity"]["decimal"] = opacity_value / 100
+        # print(AppearanceSettings.settings)
         self.theme_settings_change_callback("opacity")
 
     def change_scale(self, scale_value: int):
