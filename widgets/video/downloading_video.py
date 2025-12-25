@@ -538,13 +538,6 @@ class DownloadingVideo(Video):
         """
         Set the status to 'downloaded' if the download is downloaded.
         """
-
-        print("#"*15)
-        print("#"*15)
-        print("Called : set_downloading_completed")
-        print("#"*15)
-        print("#"*15)
-
         self.download_state = "downloaded"
         DownloadManager.unregister_from_active(self)
         VideoConvertManager.unregister_from_active(self)

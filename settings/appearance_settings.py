@@ -11,7 +11,7 @@ class AppearanceSettings:
     default_settings_directory = f"data"
     default_settings_file = default_settings_directory + "\\appearance.json"
     user_settings_directory = f"C:\\Users\\{os.getlogin()}\\AppData\\Local\\PyTube Downloader\\data"
-    user_settings_file = user_settings_directory + "\\appearance_v6.0.0.json"
+    user_settings_file = user_settings_directory + "\\appearance.json"
     
     
     SETTINGS = {
@@ -113,6 +113,12 @@ class AppearanceSettings:
         
         if not AppearanceSettings.are_all_keys_present(AppearanceSettings.SETTINGS, AppearanceSettings.settings):
             AppearanceSettings.add_missing_keys()
+
+        AppearanceSettings.resolve_settings_conflicts()
+    
+    @staticmethod
+    def resolve_settings_conflicts():
+        AppearanceSettings.settings["accent"] = AppearanceSettings.SETTINGS["accent"]
     
     @staticmethod
     def save_settings() -> None:

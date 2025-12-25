@@ -440,11 +440,13 @@ class App(ctk.CTk):
             y_axis_data="MB/s",
             x_axis_label_count=1,
             y_axis_label_count=0,
+            x_axis_section_count=0,
+            y_axis_section_count=0,
         )
 
         self.net_speed_line = ctkchart.CTkLine(
             master=self.net_speed_chart,
-            fill="disabled"
+            fill="enabled",
         )
         
         self.net_speed_label = ctk.CTkLabel(
@@ -696,7 +698,7 @@ class App(ctk.CTk):
         self.logo_label.configure(font=("Segoe UI", 50 * scale, "normal"))
         
         self.net_speed_switch.configure(
-            font=("Segoe UI UI", 11 * scale, "bold")
+            font=("Segoe UI", 11 * scale, "bold")
         )
         self.net_speed_chart.configure(
             axis_font_style=("Segoe UI", int(10 * scale), "normal"),
@@ -750,7 +752,7 @@ class App(ctk.CTk):
             height=int(120 * scale)
         )
         self.net_speed_line.configure(
-            size=int(2 * scale)
+            size=int(1 * scale)
         )
         self.bottom_hr.configure(height=int(2 * scale))
         self.net_speed_label.configure(height=int(20 * scale))
@@ -1023,6 +1025,11 @@ class App(ctk.CTk):
             x_axis_data_font_color=ThemeManager.get_color_based_on_theme("text_muted"),
             y_axis_data_font_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
+
+        self.net_speed_line.configure(
+            fill_color=ThemeManager.get_color_based_on_theme("secondary")
+        )
+        
      
         self.bottom_hr.configure(
             fg_color=ThemeManager.get_color_based_on_theme("primary"),
@@ -1956,7 +1963,9 @@ class App(ctk.CTk):
         
         
         style_type= (int(scale * 4), int(6 * scale))
-        self.net_speed_chart.configure(x_axis_values=tuple([x for x in range(1, x_axis_point_count)]))
+        self.net_speed_chart.configure(
+            x_axis_values=tuple([x for x in range(1, x_axis_point_count)]),
+            )
         self.net_speed_line.configure(style_type=style_type)
 
     def open_context_menu(self, _event: tk.Event) -> None:

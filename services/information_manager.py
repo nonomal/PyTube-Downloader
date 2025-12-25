@@ -16,7 +16,7 @@ class InformationManager:
         ],
         "logo": "⚡",
         "name": "PyTube Downloader",
-        "version": "5.1.3"
+        "version": "6.0.0"
     }
     info = {}
     default_info_directory = f"data"
@@ -46,10 +46,18 @@ class InformationManager:
 
         if not InformationManager.are_all_keys_present():
             InformationManager.add_missing_keys()
+        
+        InformationManager.resolve_info_conflicts()
+
 
     @staticmethod
     def save_info():
         JsonUtility.write_to_file(InformationManager.user_info_file, InformationManager.info)
+    
+    
+    @staticmethod
+    def resolve_info_conflicts():
+        InformationManager.info["version"] = InformationManager.INFO["version"]
 
     @staticmethod
     def are_all_keys_present() -> bool:

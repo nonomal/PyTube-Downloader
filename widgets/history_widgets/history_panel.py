@@ -379,10 +379,10 @@ class HistoryPanel(ctk.CTkFrame):
             text_color=ThemeManager.get_color_based_on_theme("text_muted"),
         )
         self.videos_button.configure(
-            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+            text_color=ThemeManager.get_color_based_on_theme("background")
         )
         self.playlists_button.configure(
-            text_color=ThemeManager.get_color_based_on_theme("text_normal")
+            text_color=ThemeManager.get_color_based_on_theme("background")
         )
         
     def set_widgets_accent_color(self) -> None:
