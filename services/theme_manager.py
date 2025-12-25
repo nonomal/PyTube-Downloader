@@ -28,12 +28,13 @@ class ThemeManager:
     @staticmethod
     def get_accent_color(state: Literal["normal", "hover"]) -> str:
         """Returns the current accent color."""
+        # print(AppearanceSettings.settings["accent"]["selected"])
         if state == "normal":
             color = AppearanceSettings.settings["accent"]["selected"]["color"][0]
         elif state == "hover":
             color = AppearanceSettings.settings["accent"]["selected"]["color"][1]
         else:
-            print("theme_manager.py L31: Invalid state for accent color")
+            # print("theme_manager.py L31: Invalid state for accent color")
             color = AppearanceSettings.settings["accent"]["selected"][0]
         return color
 

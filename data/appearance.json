@@ -1,6 +1,5 @@
 {
     "accent": {
-        "__comment__": "Windows 11 Fluent accent colors (base, hover/pressed)",
         "colors": [
                 ["#0078D4", "#006CBE"], 
                 ["#0A84FF", "#006CFF"], 
@@ -29,14 +28,13 @@
 
     },
     "window": {
-        "__comment__": "Global window settings, common for light and dark modes",
         "opacity": {
             "decimal": 0.95,
             "percentage": 95
         },
         "scale": {
-            "decimal": 2.0,
-            "percentage": 200.0
+            "decimal": 1.0,
+            "percentage": 100.0
         }
     },
     "theme": {

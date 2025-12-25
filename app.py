@@ -660,8 +660,6 @@ class App(ctk.CTk):
         based on a predetermined font style and size.
         """
         scale = AppearanceSettings.get_scale("decimal")
-        
-        print(scale)
 
         self.url_entry.configure(
             font=ctk.CTkFont(

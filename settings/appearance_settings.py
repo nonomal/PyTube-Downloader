@@ -16,7 +16,6 @@ class AppearanceSettings:
     
     SETTINGS = {
         "accent": {
-            "__comment__": "Windows 11 Fluent accent colors (base, hover/pressed)",
             "colors": [
                     ["#0078D4", "#006CBE"],  # Blue 
                     ["#0A84FF", "#006CFF"],  # Bright blue
@@ -45,7 +44,6 @@ class AppearanceSettings:
 
         },
         "window": {
-            "__comment__": "Global window settings, common for light and dark modes",
             "opacity": {
                 "decimal": 0.95,
                 "percentage": 95
@@ -57,7 +55,7 @@ class AppearanceSettings:
         },
         "theme": {
             "display_name": "Dark Default",
-            "name": "dark"
+            "name": "dark_default"
         }
     }
 
@@ -161,18 +159,19 @@ class AppearanceSettings:
     def add_missing_keys() -> None:
         """
         Add any missing keys from the default settings to the initialized settings.
-
-        This ensures that the settings include all required keys with their default values,
-        even for nested dictionaries.
+        Fixes missing or malformed keys.
         """
         def recursive_add_missing(default: dict, initialized: dict) -> None:
             for key, value in default.items():
-                if key not in initialized:
+                if key not in initialized or not isinstance(initialized[key], type(value)):
+                    # Add missing or fix type mismatch
                     initialized[key] = value
-                elif isinstance(value, dict) and isinstance(initialized[key], dict):
+                elif isinstance(value, dict):
+                    # Recurse if both are dicts
                     recursive_add_missing(value, initialized[key])
 
         recursive_add_missing(AppearanceSettings.SETTINGS, AppearanceSettings.settings)
+
 
     @staticmethod
     def create_backup() -> None:
